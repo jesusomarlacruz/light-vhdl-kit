@@ -46,6 +46,10 @@ This repository contains only scripts, configuration and examples. The installer
 
 Versions are pinned (URL + SHA-256) in `scripts/instalar_kit.ps1`. If you update NppExec, re-check the F6/F9 shortcuts: `kit/npp/shortcuts.xml` refers to NppExec menu items by position (`internalID` 25 = Simular, 26 = Comprobar, the first two entries of `[UserMenu]` in `NppExec.ini`).
 
+## License
+
+The scripts, configuration, examples and manual in this repository are released under the [MIT License](LICENSE). The tools downloaded by the installer (Notepad++, NppExec, GHDL, GTKWave) are not part of this repository and keep their own licenses.
+
 ## Checking an installed kit
 
 ```bat
