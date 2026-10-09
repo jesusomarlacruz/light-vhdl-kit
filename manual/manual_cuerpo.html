@@ -151,10 +151,22 @@ footer .wrap { padding-block: 20px 32px; }
   .wrap { padding-inline: 16px; }
 }
 @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+@page { margin: 14mm 14mm 16mm; }
 @media print {
+  body, header.hero { background: #fff; }
   nav.toc { display: none; }
-  .layout { grid-template-columns: 1fr; }
-  section { break-inside: avoid-page; }
+  /* Al imprimir, bloques normales en lugar de grid: Edge no parte bien los grid entre paginas */
+  .layout { display: block; padding-block: 16px 0; }
+  main, section, .steps, .steps > li > div { display: block; }
+  section { margin-bottom: 30px; }
+  section > * { max-width: none; }
+  section > * + *, .steps > li > div > * + * { margin-top: 12px; }
+  .steps > li + li { margin-top: 12px; }
+  h2, h3, .file { break-after: avoid; }
+  pre { white-space: pre-wrap; overflow-wrap: anywhere; overflow: visible; }
+  .table-wrap { overflow: visible; }
+  pre, .note, figure, .flow, .gtk, tr, .cheat > div { break-inside: avoid; }
+  footer { border-top: 0; }
 }
 </style>
 
@@ -164,7 +176,7 @@ footer .wrap { padding-block: 20px 32px; }
     <h1>Manual del kit VHDL</h1>
     <p class="lead">Un entorno ligero para escribir, simular y ver las formas de onda de tus diseños VHDL sin instalar Vivado: funciona desde el pendrive o desde una copia en tu ordenador.</p>
     <figure class="wave">
-      <svg viewBox="0 0 610 160" role="img" aria-label="Formas de onda de clk, rst, en y q del ejemplo del contador entre 0 y 80 ns">
+      <svg viewBox="0 0 625 160" role="img" aria-label="Formas de onda de clk, rst, en y q del ejemplo del contador entre 0 y 80 ns">
         <g>
           <line class="w-tick" x1="40" y1="6" x2="40" y2="140"/><line class="w-tick" x1="110" y1="6" x2="110" y2="140"/>
           <line class="w-tick" x1="180" y1="6" x2="180" y2="140"/><line class="w-tick" x1="250" y1="6" x2="250" y2="140"/>
@@ -504,5 +516,5 @@ end architecture sim;</pre>
 </div>
 
 <footer>
-  <div class="wrap">Kit: Notepad++ 8.9.8.1 · NppExec 0.8.12.1 · GHDL 6.0.0 · GTKWave 3.3.100. Este manual está en el pendrive como <code>MANUAL_USUARIO.html</code> y se abre con cualquier navegador, sin conexión.</div>
+  <div class="wrap">Kit: Notepad++ 8.9.8.1 · NppExec 0.8.12.1 · GHDL 6.0.0 · GTKWave 3.3.100. Este manual está en el kit como <code>MANUAL_USUARIO.html</code> y se abre con cualquier navegador, sin conexión. También se puede leer en línea en <a href="https://jesusomarlacruz.github.io/light-vhdl-kit/">jesusomarlacruz.github.io/light-vhdl-kit</a> o descargar en <a href="https://github.com/jesusomarlacruz/light-vhdl-kit/raw/main/docs/MANUAL_USUARIO.pdf">PDF</a>.</div>
 </footer>

@@ -7,7 +7,8 @@ unidad que el PC asigne al USB (D:, E:, F:...). También funciona si copia la
 carpeta VHDL al disco de su propio ordenador.
 
 Manual completo, con ejemplos y solución de errores: MANUAL_USUARIO.html
-(doble clic; se abre en el navegador sin conexión).
+(doble clic; se abre en el navegador sin conexión). También en línea:
+https://jesusomarlacruz.github.io/light-vhdl-kit/
 
   npp\            Editor Notepad++ (su configuración se guarda aquí mismo)
   ghdl\           Simulador GHDL (VHDL-2008)

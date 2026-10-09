@@ -5,7 +5,7 @@ A lightweight, portable VHDL environment for students: **Notepad++ + GHDL + GTKW
 - **F6** in the editor: compiles and simulates the active testbench and opens the waveforms in GTKWave.
 - **F9**: checks the active file (syntax, undeclared names, types, ports) without simulating.
 - Example projects: a 4-to-1 multiplexer, a 4-bit counter, and a wristwatch display selector (finite state machine, two versions) with a configurable cycle counter.
-- Student manual: `kit/MANUAL_USUARIO.html` (opens offline in any browser).
+- Student manual (Spanish): **[read online](https://jesusomarlacruz.github.io/light-vhdl-kit/)** · [PDF](docs/MANUAL_USUARIO.pdf) · also included in the kit as `MANUAL_USUARIO.html`, which opens offline.
 
 The kit itself (menus, messages, manual and examples) is in **Spanish**.
 
@@ -31,7 +31,7 @@ GHDL only **simulates**. Synthesis, implementation and programming an FPGA still
 | `kit/proyectos/` | `ejemplo_mux`, `ejemplo_contador` and `reloj_pulsera` (state machine in two versions, testbenches, a cycle counter with a generic, and saved GTKWave views). |
 | `scripts/instalar_kit.bat` / `.ps1` | Builds the kit in a drive or folder. Refuses to touch an existing `VHDL` folder. |
 | `scripts/verificar_kit.ps1` | Automated check of an installed kit (simulations, F6/F9 in the editor, cleanup). |
-| `manual/manual_cuerpo.html` | Source of the manual; `scripts/generar_manual.ps1` turns it into `kit/MANUAL_USUARIO.html`. |
+| `manual/manual_cuerpo.html` | Source of the manual. `scripts/generar_manual.ps1` turns it into `kit/MANUAL_USUARIO.html`, the online version `docs/index.html` (published with GitHub Pages) and `docs/MANUAL_USUARIO.pdf`. |
 
 ## Tools
 
