@@ -1,0 +1,11 @@
+# Herramientas descargadas (se bajan y verifican con scripts\instalar_kit.bat)
+descargas/
+
+# Resultados de simulacion
+work/
+*.ghw
+*.vcd
+*.fst
+*.cf
+*.o
+*.lst

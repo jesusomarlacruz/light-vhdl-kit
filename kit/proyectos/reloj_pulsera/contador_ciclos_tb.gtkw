@@ -1,0 +1,24 @@
+[*]
+[*] GTKWave Analyzer v3.3.100 (w)1999-2019 BSI
+[*] Vista de contador_ciclos_tb.ghw: reloj, reset, en, clr, cuenta interna (decimal) y fin
+[*]
+[timestart] 0
+[size] 1000 600
+[pos] -1 -1
+[treeopen] top.
+[treeopen] top.contador_ciclos_tb.
+[sst_width] 200
+[signals_width] 170
+[sst_expanded] 1
+[sst_vpaned_height] 160
+@28
+top.contador_ciclos_tb.clk
+top.contador_ciclos_tb.rst
+top.contador_ciclos_tb.en
+top.contador_ciclos_tb.clr
+@24
+top.contador_ciclos_tb.uut.cuenta
+@28
+top.contador_ciclos_tb.fin
+[pattern_trace] 1
+[pattern_trace] 0

@@ -1,0 +1,508 @@
+<title>Manual del kit VHDL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+/* Layout: cabecera con onda del contador; debajo, indice lateral fijo + columna de lectura (una columna en movil) */
+:root {
+  --bg: #f5f7f9;
+  --surface: #ffffff;
+  --fg: #1a2230;
+  --muted: #586273;
+  --line: #d8dee6;
+  --accent: #0e6a80;
+  --accent-soft: #e0eff2;
+  --code-bg: #eef1f5;
+  --ok: #2b7a3d;      --ok-soft: #e2f2e5;
+  --warn: #8f5600;    --warn-soft: #fbefd9;
+  --err: #a2262b;     --err-soft: #f8e2e2;
+  --trace: #1f7f45;
+  --font-display: "IBM Plex Sans Condensed", "Arial Narrow", "Segoe UI", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "IBM Plex Mono", Consolas, "Cascadia Mono", "Courier New", monospace;
+  --radius: 6px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11151b; --surface: #181e26; --fg: #e3e8ee; --muted: #9aa4b2; --line: #2b3440;
+    --accent: #5cbfd4; --accent-soft: #15313a; --code-bg: #0d1116;
+    --ok: #7fcf8f; --ok-soft: #173020; --warn: #e2a84c; --warn-soft: #36290f;
+    --err: #f28b8e; --err-soft: #3a1b1d; --trace: #6fd08c;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11151b; --surface: #181e26; --fg: #e3e8ee; --muted: #9aa4b2; --line: #2b3440;
+  --accent: #5cbfd4; --accent-soft: #15313a; --code-bg: #0d1116;
+  --ok: #7fcf8f; --ok-soft: #173020; --warn: #e2a84c; --warn-soft: #36290f;
+  --err: #f28b8e; --err-soft: #3a1b1d; --trace: #6fd08c;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 16px; line-height: 1.6; margin: 0; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: 20px; }
+
+header.hero { border-bottom: 1px solid var(--line); background: var(--surface); }
+.hero .wrap { padding-block: 40px 28px; display: grid; gap: 20px; }
+.eyebrow { font-family: var(--font-mono); font-size: 12.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin: 0; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; line-height: 1.2; margin: 0; }
+h1 { font-size: clamp(32px, 5vw, 46px); font-weight: 700; }
+.lead { font-size: 18px; color: var(--muted); max-width: 62ch; margin: 0; }
+figure.wave { margin: 0; background: var(--code-bg); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px 10px; overflow-x: auto; }
+figure.wave svg { display: block; width: 100%; min-width: 520px; height: auto; }
+figure.wave figcaption { font-size: 13.5px; color: var(--muted); margin-top: 6px; }
+.w-label { font-family: var(--font-mono); font-size: 12px; fill: var(--muted); }
+.w-trace { fill: none; stroke: var(--trace); stroke-width: 1.6; }
+.w-bus { fill: none; stroke: var(--trace); stroke-width: 1.4; }
+.w-bus-u { fill: var(--warn-soft); stroke: var(--warn); stroke-width: 1.4; }
+.w-val { font-family: var(--font-mono); font-size: 12px; fill: var(--fg); text-anchor: middle; }
+.w-tick { stroke: var(--line); stroke-width: 1; }
+.w-time { font-family: var(--font-mono); font-size: 10.5px; fill: var(--muted); text-anchor: middle; }
+
+.layout { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 48px; padding-block: 36px 80px; }
+nav.toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 20px); align-self: start; font-size: 14px; }
+nav.toc p { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
+nav.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; counter-reset: s; }
+nav.toc li { counter-increment: s; }
+nav.toc a { display: flex; gap: 8px; color: var(--fg); text-decoration: none; padding: 4px 8px; border-radius: 4px; }
+nav.toc a::before { content: counter(s); font-family: var(--font-mono); color: var(--muted); min-width: 1.4em; }
+nav.toc a:hover, nav.toc a:focus-visible { background: var(--accent-soft); color: var(--accent); outline: none; }
+
+main { min-width: 0; display: grid; gap: 56px; }
+section { display: grid; gap: 16px; scroll-margin-top: 20px; }
+section > * { max-width: 70ch; }
+section > .wide { max-width: none; }
+h2 { font-size: 28px; font-weight: 700; display: flex; gap: 12px; align-items: baseline; }
+h2 .n { font-family: var(--font-mono); font-size: 16px; font-weight: 600; color: var(--accent); }
+h3 { font-size: 19px; font-weight: 600; margin-top: 8px; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3em; display: grid; gap: 6px; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+
+code, kbd, pre { font-family: var(--font-mono); font-size: 0.88em; }
+code { background: var(--code-bg); padding: 1px 5px; border-radius: 4px; overflow-wrap: anywhere; }
+kbd { display: inline-block; background: var(--surface); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 6px; line-height: 1.5; white-space: nowrap; }
+pre { background: var(--code-bg); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; margin: 0; overflow-x: auto; line-height: 1.5; font-size: 13.5px; }
+pre .c { color: var(--muted); }
+pre .ok { color: var(--ok); font-weight: 600; }
+pre .er { color: var(--err); font-weight: 600; }
+.file { font-family: var(--font-mono); font-size: 12.5px; color: var(--muted); margin: 0 0 -10px; }
+
+.steps { counter-reset: p; list-style: none; padding: 0; display: grid; gap: 14px; }
+.steps > li { counter-increment: p; display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 12px; align-items: start; }
+.steps > li::before { content: counter(p); font-family: var(--font-mono); font-weight: 600; font-size: 14px; color: var(--accent); background: var(--accent-soft); border-radius: 50%; width: 30px; height: 30px; display: grid; place-items: center; }
+.steps > li > div { display: grid; gap: 6px; min-width: 0; }
+
+.flow { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); overflow: hidden; }
+.flow > div { padding: 16px 18px; display: grid; gap: 4px; align-content: start; }
+.flow > div + div { border-left: 1px solid var(--line); }
+.flow .t { font-family: var(--font-display); font-weight: 700; font-size: 18px; }
+.flow .d { font-size: 14px; color: var(--muted); }
+.flow .k { font-family: var(--font-mono); font-size: 12px; color: var(--accent); letter-spacing: .06em; text-transform: uppercase; }
+
+.note { border: 1px solid var(--line); border-left: 4px solid var(--accent); background: var(--surface); border-radius: var(--radius); padding: 14px 16px; display: grid; gap: 6px; }
+.note.rule { border-left-color: var(--warn); background: var(--warn-soft); }
+.note.ok { border-left-color: var(--ok); background: var(--ok-soft); }
+.note .h { font-weight: 600; }
+
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 14.5px; }
+th, td { text-align: left; vertical-align: top; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+tr:last-child td { border-bottom: 0; }
+th { font-family: var(--font-mono); font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); background: var(--code-bg); }
+td code { white-space: normal; }
+.tag { font-family: var(--font-mono); font-size: 11.5px; font-weight: 600; padding: 1px 7px; border-radius: 10px; white-space: nowrap; }
+.tag.ok { color: var(--ok); background: var(--ok-soft); }
+.tag.warn { color: var(--warn); background: var(--warn-soft); }
+.tag.err { color: var(--err); background: var(--err-soft); }
+
+/* Maqueta de la ventana de GTKWave */
+.gtk { display: grid; grid-template-columns: 1fr 1fr 2fr; grid-template-rows: auto 1fr; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--surface); font-size: 13px; min-width: 560px; }
+.gtk-bar { grid-column: 1 / -1; background: var(--code-bg); border-bottom: 1px solid var(--line); padding: 6px 10px; font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+.gtk > .pane { padding: 10px 12px; display: grid; gap: 6px; align-content: start; border-right: 1px solid var(--line); min-width: 0; }
+.gtk > .pane:last-child { border-right: 0; }
+.pane .ttl { font-family: var(--font-mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+.pane .mono { font-family: var(--font-mono); font-size: 12px; line-height: 1.7; }
+.pane .btns { display: flex; gap: 4px; flex-wrap: wrap; }
+.pane .btns span { border: 1px solid var(--line); border-radius: 3px; padding: 0 6px; font-size: 11.5px; }
+.pane .btns span.hi { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.pane .sel { background: var(--accent-soft); border-radius: 3px; padding: 0 4px; }
+.pane .hint { font-size: 12.5px; color: var(--muted); }
+.mini-wave { display: block; width: 100%; height: auto; }
+
+.cheat { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.cheat .table-wrap td:first-child { white-space: nowrap; }
+
+footer { border-top: 1px solid var(--line); color: var(--muted); font-size: 13.5px; }
+footer .wrap { padding-block: 20px 32px; }
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  nav.toc { position: static; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); padding: 12px; }
+  nav.toc ol { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cheat { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 560px) {
+  .flow { grid-template-columns: minmax(0, 1fr); }
+  .flow > div + div { border-left: 0; border-top: 1px solid var(--line); }
+  nav.toc ol { grid-template-columns: minmax(0, 1fr); }
+  .wrap { padding-inline: 16px; }
+}
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+@media print {
+  nav.toc { display: none; }
+  .layout { grid-template-columns: 1fr; }
+  section { break-inside: avoid-page; }
+}
+</style>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Kit portátil · Notepad++ + GHDL + GTKWave</p>
+    <h1>Manual del kit VHDL</h1>
+    <p class="lead">Un entorno ligero para escribir, simular y ver las formas de onda de tus diseños VHDL sin instalar Vivado: funciona desde el pendrive o desde una copia en tu ordenador.</p>
+    <figure class="wave">
+      <svg viewBox="0 0 610 160" role="img" aria-label="Formas de onda de clk, rst, en y q del ejemplo del contador entre 0 y 80 ns">
+        <g>
+          <line class="w-tick" x1="40" y1="6" x2="40" y2="140"/><line class="w-tick" x1="110" y1="6" x2="110" y2="140"/>
+          <line class="w-tick" x1="180" y1="6" x2="180" y2="140"/><line class="w-tick" x1="250" y1="6" x2="250" y2="140"/>
+          <line class="w-tick" x1="320" y1="6" x2="320" y2="140"/><line class="w-tick" x1="390" y1="6" x2="390" y2="140"/>
+          <line class="w-tick" x1="460" y1="6" x2="460" y2="140"/><line class="w-tick" x1="530" y1="6" x2="530" y2="140"/>
+          <line class="w-tick" x1="600" y1="6" x2="600" y2="140"/>
+        </g>
+        <text class="w-label" x="0" y="27">clk</text>
+        <text class="w-label" x="0" y="61">rst</text>
+        <text class="w-label" x="0" y="95">en</text>
+        <text class="w-label" x="0" y="129">q</text>
+        <path class="w-trace" d="M40,32 H75 V14 H110 V32 H145 V14 H180 V32 H215 V14 H250 V32 H285 V14 H320 V32 H355 V14 H390 V32 H425 V14 H460 V32 H495 V14 H530 V32 H565 V14 H600"/>
+        <path class="w-trace" d="M40,48 H180 V66 H600"/>
+        <path class="w-trace" d="M40,100 H180 V82 H530 V100 H600"/>
+        <polygon class="w-bus-u" points="40,125 43,116 72,116 75,125 72,134 43,134"/>
+        <polygon class="w-bus" points="75,125 78,116 212,116 215,125 212,134 78,134"/>
+        <polygon class="w-bus" points="215,125 218,116 282,116 285,125 282,134 218,134"/>
+        <polygon class="w-bus" points="285,125 288,116 352,116 355,125 352,134 288,134"/>
+        <polygon class="w-bus" points="355,125 358,116 422,116 425,125 422,134 358,134"/>
+        <polygon class="w-bus" points="425,125 428,116 492,116 495,125 492,134 428,134"/>
+        <polygon class="w-bus" points="495,125 498,116 600,116 600,134 498,134"/>
+        <text class="w-val" x="57.5" y="129">U</text><text class="w-val" x="145" y="129">0</text>
+        <text class="w-val" x="250" y="129">1</text><text class="w-val" x="320" y="129">2</text>
+        <text class="w-val" x="390" y="129">3</text><text class="w-val" x="460" y="129">4</text>
+        <text class="w-val" x="547.5" y="129">5</text>
+        <text class="w-time" x="40" y="154">0</text><text class="w-time" x="110" y="154">10 ns</text>
+        <text class="w-time" x="180" y="154">20 ns</text><text class="w-time" x="250" y="154">30 ns</text>
+        <text class="w-time" x="320" y="154">40 ns</text><text class="w-time" x="390" y="154">50 ns</text>
+        <text class="w-time" x="460" y="154">60 ns</text><text class="w-time" x="530" y="154">70 ns</text>
+        <text class="w-time" x="600" y="154">80 ns</text>
+      </svg>
+      <figcaption>Los primeros 80 ns del ejemplo del contador, como los verás en GTKWave: la cuenta vale U (sin valor) hasta el primer flanco con reset, y sube de 0 a 5 mientras <code>en</code> vale 1.</figcaption>
+    </figure>
+  </div>
+</header>
+
+<div class="wrap layout">
+  <nav class="toc" aria-label="Índice">
+    <p>Índice</p>
+    <ol>
+      <li><a href="#pendrive">Qué hay en el pendrive</a></li>
+      <li><a href="#primera">Tu primera simulación</a></li>
+      <li><a href="#comprobar">Comprobar sin simular</a></li>
+      <li><a href="#gtkwave">Ver las ondas en GTKWave</a></li>
+      <li><a href="#proyecto">Crear tu propio proyecto</a></li>
+      <li><a href="#mensajes">Mensajes y errores</a></li>
+      <li><a href="#consola">Simular desde la consola</a></li>
+      <li><a href="#limpiar">Limpiar un proyecto</a></li>
+      <li><a href="#problemas">Si algo no funciona</a></li>
+      <li><a href="#chuleta">Chuleta de atajos</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <section id="pendrive">
+      <h2><span class="n">1</span>Qué hay en el pendrive</h2>
+      <p>Todo está dentro de la carpeta <code>VHDL</code> del pendrive. La letra de la unidad cambia según el PC (<code>D:</code>, <code>E:</code>, <code>F:</code>…); da igual, el kit funciona con cualquiera.</p>
+      <div class="table-wrap wide">
+        <table>
+          <thead><tr><th>Elemento</th><th>Para qué sirve</th></tr></thead>
+          <tbody>
+            <tr><td><code>abrir_editor.bat</code></td><td>Abre el editor Notepad++ con tus proyectos. <strong>Empieza siempre por aquí.</strong></td></tr>
+            <tr><td><code>proyectos\</code></td><td>Tus proyectos, una carpeta por proyecto. Trae tres: <code>ejemplo_mux</code>, <code>ejemplo_contador</code> y <code>reloj_pulsera</code> (un ejercicio de máquina de estados, con su enunciado en <code>ENUNCIADO.txt</code>).</td></tr>
+            <tr><td><code>sim.bat</code></td><td>Compila, simula y abre las ondas. Lo usa la tecla <kbd>F6</kbd> del editor.</td></tr>
+            <tr><td><code>comprobar.bat</code></td><td>Comprueba un fichero <code>.vhd</code> sin simular. Lo usa la tecla <kbd>F9</kbd>.</td></tr>
+            <tr><td><code>limpiar.bat</code></td><td>Borra los ficheros que genera la simulación.</td></tr>
+            <tr><td><code>LEEME.txt</code></td><td>Resumen rápido de este manual.</td></tr>
+            <tr><td><code>npp\</code>, <code>ghdl\</code>, <code>gtkwave\</code></td><td>Los programas: el editor, el simulador y el visor de ondas. No hace falta tocarlos.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="flow wide" aria-label="Flujo de trabajo">
+        <div><span class="k">Paso 1 · Notepad++</span><span class="t">Escribe</span><span class="d">El diseño (<code>xxx.vhd</code>) y su banco de pruebas (<code>tb_xxx.vhd</code>).</span></div>
+        <div><span class="k">Paso 2 · GHDL</span><span class="t">Pulsa F6</span><span class="d">Guarda, compila y simula. Los mensajes salen en la consola del editor.</span></div>
+        <div><span class="k">Paso 3 · GTKWave</span><span class="t">Mira las ondas</span><span class="d">Se abre solo, con la simulación completa en pantalla.</span></div>
+      </div>
+    </section>
+
+    <section id="primera">
+      <h2><span class="n">2</span>Tu primera simulación</h2>
+      <p>Hazlo con el ejemplo del multiplexor para comprobar que todo funciona en tu PC.</p>
+      <ol class="steps">
+        <li><div><p>Conecta el pendrive, abre la carpeta <code>VHDL</code> y haz doble clic en <code>abrir_editor.bat</code>.</p><p>Se abre Notepad++ con la carpeta <code>proyectos</code> en el panel de la izquierda.</p></div></li>
+        <li><div><p>En ese panel, despliega <code>ejemplo_mux</code> y haz doble clic en <code>tb_mux.vhd</code>. Es el <strong>banco de pruebas</strong> (testbench): el fichero que genera los estímulos y comprueba el diseño <code>mux4.vhd</code>.</p></div></li>
+        <li><div><p>Con la pestaña <code>tb_mux.vhd</code> activa, pulsa <kbd>F6</kbd>.</p><p>En la parte inferior aparece la consola con el progreso. Si todo va bien, termina así:</p>
+<pre><span class="c">=== 1/3  Importando los ficheros .vhd ===</span>
+  mux4.vhd
+  tb_mux.vhd
+<span class="c">=== 2/3  Compilando tb_mux ===</span>
+<span class="c">=== 3/3  Simulando tb_mux hasta 1us ===</span>
+
+Abriendo GTKWave con la vista guardada tb_mux.gtkw
+
+<span class="ok">Simulacion terminada correctamente.</span>
+&lt;&lt;&lt; Process finished (PID=48096). (Exit code 0)
+================ READY ================</pre></div></li>
+        <li><div><p>Se abre GTKWave, maximizado, con el selector, las cuatro entradas y la salida. Comprueba que <code>y</code> copia la entrada que indica <code>sel</code>.</p></div></li>
+      </ol>
+      <div class="note ok"><p class="h">Si has llegado hasta aquí, el kit funciona en este PC.</p><p>Repite con <code>ejemplo_contador\tb_contador.vhd</code> para ver un circuito con reloj.</p></div>
+      <div class="note"><p class="h">F6 simula como máximo 1 µs</p><p>Es suficiente para los ejemplos. Si tu banco de pruebas necesita más tiempo, la simulación se corta en 1 µs y verás <code>simulation stopped by --stop-time @1us</code>. Para simular más, usa la consola (<a href="#consola">sección 7</a>) e indica el tiempo, por ejemplo <code>5us</code>.</p></div>
+    </section>
+
+    <section id="comprobar">
+      <h2><span class="n">3</span>Comprobar un fichero sin simular</h2>
+      <p>Con <kbd>F9</kbd> compruebas el fichero activo <strong>sin banco de pruebas</strong>: GHDL revisa la sintaxis, los nombres no declarados, los tipos y los nombres de los puertos, pero no simula nada. Úsalo a menudo mientras escribes un diseño.</p>
+      <ol class="steps">
+        <li><div><p>Abre el fichero que quieres revisar: el diseño (<code>mux4.vhd</code>) o el banco de pruebas.</p></div></li>
+        <li><div><p>Pulsa <kbd>F9</kbd> (o <code>Plugins &gt; NppExec &gt; Comprobar</code>). Se guardan los ficheros y el resultado sale en la consola:</p>
+<pre>=== Comprobando mux4.vhd ===
+<span class="ok">Correcto: mux4.vhd no tiene errores de sintaxis, nombres, tipos ni puertos.</span></pre>
+<p>Si hay un error, GHDL indica el fichero, la línea y la columna:</p>
+<pre>=== Comprobando contador.vhd ===
+<span class="er">contador.vhd:36:29:error: missing ";" at end of statement</span>
+        cuenta &lt;= cuenta + 1         -- despues de 15 vuelve a 0
+                            ^</pre></div></li>
+      </ol>
+      <div class="note">
+        <p class="h">Si el fichero usa otras entidades</p>
+        <p>Un banco de pruebas usa el diseño que prueba. Los ficheros con esas entidades tienen que estar en la misma carpeta y no tener errores; si no, verás <code>unit "contador" not found in library "work"</code>. Comprueba primero el diseño y después el banco de pruebas.</p>
+      </div>
+      <p>Que un fichero sea correcto no significa que el circuito haga lo que quieres: para ver su comportamiento, simula con <kbd>F6</kbd>. Desde la consola: <code>..\..\comprobar.bat mux4.vhd</code></p>
+    </section>
+    <section id="gtkwave">
+      <h2><span class="n">4</span>Ver las ondas en GTKWave</h2>
+      <p>GTKWave abre la simulación completa en pantalla. Si el proyecto tiene una vista guardada (<code>tb_xxx.gtkw</code>), aparecen ya sus señales; si no, la zona de ondas sale vacía y tienes que añadirlas.</p>
+      <div class="table-wrap wide" style="border:0; background:transparent">
+        <div class="gtk" aria-label="Esquema de la ventana de GTKWave">
+          <div class="gtk-bar">GTKWave - tb_mux.ghw</div>
+          <div class="pane">
+            <span class="ttl">SST (jerarquía)</span>
+            <div class="mono">▾ top<br>&nbsp;&nbsp;▾ <span class="sel">tb_mux</span><br>&nbsp;&nbsp;&nbsp;&nbsp;▸ uut</div>
+            <div class="mono">a[3:0]<br>b[3:0]<br><span class="sel">sel[1:0]</span><br>y[3:0]</div>
+            <div class="btns"><span class="hi">Append</span><span>Insert</span><span>Replace</span></div>
+            <span class="hint">1. Elige el banco de pruebas, 2. selecciona señales, 3. pulsa Append.</span>
+          </div>
+          <div class="pane">
+            <span class="ttl">Signals</span>
+            <div class="mono">sel[1:0] = 01<br>a[3:0] = 8<br>b[3:0] = 9<br>y[3:0] = 9</div>
+            <span class="hint">Nombre y valor en el cursor. Clic derecho para cambiar el formato.</span>
+          </div>
+          <div class="pane">
+            <span class="ttl">Waves</span>
+            <svg class="mini-wave" viewBox="0 0 300 96" aria-hidden="true">
+              <line class="w-tick" x1="150" y1="0" x2="150" y2="96" style="stroke: var(--accent); stroke-width: 1.5"/>
+              <polygon class="w-bus" points="4,14 7,6 67,6 70,14 67,22 7,22"/><polygon class="w-bus" points="70,14 73,6 133,6 136,14 133,22 73,22"/>
+              <polygon class="w-bus" points="136,14 139,6 199,6 202,14 199,22 139,22"/><polygon class="w-bus" points="202,14 205,6 265,6 268,14 265,22 205,22"/>
+              <text class="w-val" x="37" y="18">00</text><text class="w-val" x="103" y="18">01</text><text class="w-val" x="169" y="18">10</text><text class="w-val" x="235" y="18">11</text>
+              <polygon class="w-bus" points="4,38 7,30 265,30 268,38 265,46 7,46"/><text class="w-val" x="136" y="42">8</text>
+              <polygon class="w-bus" points="4,62 7,54 265,54 268,62 265,70 7,70"/><text class="w-val" x="136" y="66">9</text>
+              <polygon class="w-bus" points="4,86 7,78 67,78 70,86 67,94 7,94"/><polygon class="w-bus" points="70,86 73,78 133,78 136,86 133,94 73,94"/>
+              <polygon class="w-bus" points="136,86 139,78 199,78 202,86 199,94 139,94"/><polygon class="w-bus" points="202,86 205,78 265,78 268,86 265,94 205,94"/>
+              <text class="w-val" x="37" y="90">8</text><text class="w-val" x="103" y="90">9</text><text class="w-val" x="169" y="90">10</text><text class="w-val" x="235" y="90">11</text>
+            </svg>
+            <span class="hint">Haz clic en las ondas para colocar el cursor (línea vertical).</span>
+          </div>
+        </div>
+      </div>
+      <h3>Añadir señales</h3>
+      <ol>
+        <li>En el panel <strong>SST</strong> (arriba a la izquierda), despliega <code>top</code> y haz clic en tu banco de pruebas, por ejemplo <code>tb_mux</code>. Debajo aparecen sus señales.</li>
+        <li>Selecciona las que quieras (<kbd>Ctrl</kbd>+clic para varias) y pulsa <strong>Append</strong>. También puedes arrastrarlas a la zona de ondas.</li>
+        <li>Las señales internas del diseño están dentro de <code>uut</code>, el nombre de la instancia en el banco de pruebas.</li>
+      </ol>
+      <h3>Moverse por las ondas</h3>
+      <ul>
+        <li><strong>Ver toda la simulación:</strong> menú <code>Time &gt; Zoom &gt; Zoom Best Fit</code> (<kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>F</kbd>).</li>
+        <li><strong>Acercar y alejar:</strong> <kbd>Ctrl</kbd>+<kbd>+</kbd> y <kbd>Ctrl</kbd>+<kbd>-</kbd>, o los botones de lupa de la barra.</li>
+        <li><strong>Leer un valor:</strong> haz clic en un instante de la zona de ondas. La columna Signals muestra el valor de cada señal en ese instante.</li>
+        <li><strong>Cambiar el formato de un bus:</strong> clic derecho sobre la señal &gt; <code>Data Format</code> &gt; <code>Binary</code>, <code>Decimal</code> o <code>Hex</code>.</li>
+      </ul>
+      <h3>Guardar la vista para la próxima vez</h3>
+      <p>Menú <code>File &gt; Write Save File As…</code> y guárdala en la carpeta del proyecto con el nombre del banco de pruebas: <code>tb_xxx.gtkw</code>. A partir de entonces, cada simulación abre GTKWave con esas señales y formatos. Después, <code>File &gt; Write Save File</code> (<kbd>Ctrl</kbd>+<kbd>S</kbd>) actualiza la vista.</p>
+      <h3>Volver a simular con GTKWave abierto</h3>
+      <p>Cada <kbd>F6</kbd> abre una ventana nueva de GTKWave. Si prefieres seguir en la que tienes, tras simular usa <code>File &gt; Reload Waveform</code> (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd>): actualiza las ondas sin perder las señales que añadiste. Cierra las ventanas que sobren.</p>
+    </section>
+
+    <section id="proyecto">
+      <h2><span class="n">5</span>Crear tu propio proyecto</h2>
+      <ol class="steps">
+        <li><div><p>Crea una carpeta nueva dentro de <code>proyectos</code>. Usa un nombre corto, sin tildes ni espacios: <code>practica1</code>, <code>sumador</code>…</p></div></li>
+        <li><div><p>Crea dentro dos ficheros: el diseño (<code>puerta_and.vhd</code>) y su banco de pruebas (<code>tb_puerta_and.vhd</code>). En Notepad++: <code>File &gt; New</code> y después <code>File &gt; Save As…</code> con extensión <code>.vhd</code>.</p></div></li>
+        <li><div><p>Con la pestaña del banco de pruebas activa, pulsa <kbd>F6</kbd>.</p></div></li>
+      </ol>
+      <div class="note rule">
+        <p class="h">Regla obligatoria: el fichero se llama igual que su entidad</p>
+        <p><code>tb_puerta_and.vhd</code> debe contener <code>entity tb_puerta_and is</code>. <kbd>F6</kbd> usa el nombre del fichero activo para saber qué entidad simular. Por convenio, el nombre de un banco de pruebas empieza por <code>tb_</code> (<code>tb_mux</code>) o termina en <code>_tb</code> (<code>reloj_pulsera_v1_tb</code>).</p>
+      </div>
+      <div class="note">
+        <p class="h">Un proyecto por carpeta</p>
+        <p>Se compilan <strong>todos</strong> los <code>.vhd</code> de la carpeta. No dejes copias antiguas con extensión <code>.vhd</code> (por ejemplo <code>mux4_viejo.vhd</code>): renómbralas a <code>.txt</code> o muévelas a otra carpeta.</p>
+      </div>
+      <h3>Plantilla para empezar</h3>
+      <p>Una puerta AND y su banco de pruebas, que prueba las cuatro combinaciones de entrada. Cópialos, cambia los nombres y adáptalos a tu diseño. Después, comprueba en GTKWave que <code>y</code> solo vale 1 cuando <code>a</code> y <code>b</code> valen 1.</p>
+      <p class="file">puerta_and.vhd</p>
+<pre>library ieee;
+use ieee.std_logic_1164.all;
+
+entity puerta_and is
+  port (
+    a, b : in  std_logic;
+    y    : out std_logic
+  );
+end entity puerta_and;
+
+architecture rtl of puerta_and is
+begin
+  y &lt;= a and b;
+end architecture rtl;</pre>
+      <p class="file">tb_puerta_and.vhd</p>
+<pre>library ieee;
+use ieee.std_logic_1164.all;
+
+<span class="c">-- El banco de pruebas no tiene puertos</span>
+entity tb_puerta_and is
+end entity tb_puerta_and;
+
+architecture sim of tb_puerta_and is
+  signal a, b : std_logic := '0';
+  signal y    : std_logic;
+begin
+
+  <span class="c">-- Unidad bajo prueba (UUT)</span>
+  uut : entity work.puerta_and
+    port map (a =&gt; a, b =&gt; b, y =&gt; y);
+
+  <span class="c">-- Las cuatro combinaciones de entrada, 10 ns cada una</span>
+  estimulos : process
+  begin
+    a &lt;= '0'; b &lt;= '0';
+    wait for 10 ns;
+    a &lt;= '0'; b &lt;= '1';
+    wait for 10 ns;
+    a &lt;= '1'; b &lt;= '0';
+    wait for 10 ns;
+    a &lt;= '1'; b &lt;= '1';
+    wait for 10 ns;
+    wait;                     <span class="c">-- detiene el proceso</span>
+  end process estimulos;
+
+end architecture sim;</pre>
+      <p>Si el diseño tiene reloj, genera el reloj con <code>clk &lt;= not clk after 5 ns;</code> y termina la prueba con <code>std.env.stop;</code>, como en <code>ejemplo_contador\tb_contador.vhd</code>. Sin eso, el reloj nunca se detiene y la simulación dura hasta el tiempo máximo.</p>
+      <p>Escribe los comentarios sin tildes ni eñes (<code>-- senal de reset</code>): así el código se ve igual en cualquier editor y en Vivado.</p>
+    </section>
+
+    <section id="mensajes">
+      <h2><span class="n">6</span>Mensajes y errores frecuentes</h2>
+      <p>Los errores de GHDL tienen siempre la forma <code>fichero.vhd:línea:columna: mensaje</code>. Ve a esa línea en el editor (<kbd>Ctrl</kbd>+<kbd>G</kbd>) y revisa también la línea anterior: muchas veces el fallo está justo antes.</p>
+      <div class="table-wrap wide">
+        <table>
+          <thead><tr><th>Mensaje</th><th>Qué significa y qué hacer</th></tr></thead>
+          <tbody>
+            <tr><td><span class="tag err">error</span><br><code>mux4.vhd:30:9:error: ';' expected at end of signal assignment</code></td><td>Error de sintaxis: falta un <code>;</code>. Está al final de la instrucción anterior a la línea 30.</td></tr>
+            <tr><td><span class="tag err">error</span><br><code>cannot find entity or configuration tb_prueba</code></td><td>No hay ninguna entidad con el nombre del fichero activo. Revisa la regla: <code>tb_prueba.vhd</code> debe contener <code>entity tb_prueba</code>.</td></tr>
+            <tr><td><span class="tag err">error</span><br><code>unit "contador" not found in library "work"</code></td><td>El banco de pruebas usa un diseño que no está en la carpeta, o cuya entidad tiene otro nombre. Copia el fichero del diseño a la carpeta del proyecto o corrige el nombre en <code>entity work.xxx</code>.</td></tr>
+            <tr><td><span class="tag warn">aviso</span><br><code>AVISO: "mux4" no parece un banco de pruebas</code></td><td>Has pulsado <kbd>F6</kbd> con el diseño activo en vez del banco de pruebas. Activa la pestaña del banco de pruebas y vuelve a pulsar <kbd>F6</kbd>.</td></tr>
+            <tr><td><span class="tag warn">aviso</span><br><code>no se puede reemplazar tb_xxx.ghw</code></td><td>Otro programa tiene abierto el fichero de ondas. Ciérralo y vuelve a simular.</td></tr>
+            <tr><td><span class="tag ok">normal</span><br><code>simulation stopped @230ns</code></td><td>El banco de pruebas ha terminado con <code>std.env.stop</code>. Correcto.</td></tr>
+            <tr><td><span class="tag ok">normal</span><br><code>simulation stopped by --stop-time @1us</code></td><td>Se ha llegado al tiempo máximo. Si la prueba no había terminado, simula más tiempo desde la consola.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="consola">
+      <h2><span class="n">7</span>Simular desde la consola</h2>
+      <p>Es la alternativa a <kbd>F6</kbd>, útil para elegir el tiempo de simulación.</p>
+      <ol class="steps">
+        <li><div><p>Abre la carpeta del proyecto en el Explorador de archivos, escribe <code>cmd</code> en la barra de direcciones y pulsa <kbd>Intro</kbd>. Se abre una consola en esa carpeta.</p></div></li>
+        <li><div><p>Escribe el nombre de la entidad del banco de pruebas y, si quieres, el tiempo:</p>
+<pre>..\..\sim.bat tb_contador 5us</pre>
+<p><code>..\..\</code> sube de la carpeta del proyecto a la carpeta <code>VHDL</code>, donde está <code>sim.bat</code>. Unidades de tiempo: <code>ns</code>, <code>us</code>, <code>ms</code>, sin espacio. Por defecto, <code>1us</code>.</p></div></li>
+      </ol>
+      <p>Si hay errores, la consola espera a que pulses una tecla. GTKWave queda ligado a esa consola: ciérrala cuando termines con GTKWave, no antes.</p>
+    </section>
+
+    <section id="limpiar">
+      <h2><span class="n">8</span>Limpiar un proyecto</h2>
+      <p>La simulación crea la carpeta <code>work\</code> y el fichero de ondas <code>tb_xxx.ghw</code>. Para borrarlos (por ejemplo antes de entregar la práctica o de copiar el proyecto):</p>
+      <ul>
+        <li>En Notepad++, con cualquier fichero del proyecto activo: <code>Plugins &gt; NppExec &gt; Limpiar</code>.</li>
+        <li>O desde la consola en la carpeta del proyecto: <code>..\..\limpiar.bat</code></li>
+      </ul>
+      <p>Nunca borra tus <code>.vhd</code> ni tus vistas <code>.gtkw</code>. No hace falta limpiar para volver a simular: cada simulación empieza de cero.</p>
+    </section>
+
+    <section id="problemas">
+      <h2><span class="n">9</span>Si algo no funciona</h2>
+      <div class="table-wrap wide">
+        <table>
+          <thead><tr><th>Problema</th><th>Solución</th></tr></thead>
+          <tbody>
+            <tr><td><kbd>F6</kbd> o <kbd>F9</kbd> no hacen nada, o abren otra ventana</td><td>Abre el editor con <code>abrir_editor.bat</code>: otro Notepad++ instalado en el PC no tiene la tecla configurada. Comprueba que la pestaña activa es el banco de pruebas. Alternativa: <code>Plugins &gt; NppExec &gt; Simular</code>.</td></tr>
+            <tr><td>Windows bloquea los programas del USB («Windows protegió su PC» o un aviso de directiva)</td><td>En ese PC el kit no puede funcionar. Prueba en otro PC, copia la carpeta <code>VHDL</code> al disco de tu propio ordenador o usa <a href="https://www.edaplayground.com">EDA Playground</a> en el navegador.</td></tr>
+            <tr><td>El antivirus pone en cuarentena <code>ghdl.exe</code> o <code>gtkwave.exe</code></td><td>En tu ordenador, restaura el fichero desde el antivirus. En un PC del aula, usa otro PC o EDA Playground.</td></tr>
+            <tr><td>Una señal vale <code>U</code> o <code>X</code> en GTKWave</td><td><code>U</code>: nadie le ha dado valor todavía; casi siempre falta aplicar el reset al principio o dar valor inicial a las entradas en el banco de pruebas. <code>X</code>: dos asignaciones distintas a la misma señal, o una operación con una señal que vale <code>U</code>.</td></tr>
+            <tr><td>GTKWave se abre pero la zona de ondas está vacía</td><td>No hay vista guardada: añade las señales (<a href="#gtkwave">sección 4</a>) y guarda la vista como <code>tb_xxx.gtkw</code>.</td></tr>
+            <tr><td>Las ondas no cambian tras corregir el código</td><td>Estás mirando una ventana antigua de GTKWave. Usa <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd> o mira la ventana nueva.</td></tr>
+            <tr><td>Todas las señales valen <code>U</code></td><td>Estás simulando el diseño en vez del banco de pruebas, o el banco de pruebas no asigna valores a las entradas.</td></tr>
+            <tr><td>Error extraño con rutas muy largas</td><td>GHDL no admite rutas de más de 260 caracteres. Usa nombres de carpeta cortos.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note rule"><p class="h">GHDL solo simula</p><p>La síntesis, la implementación y la programación de la FPGA se siguen haciendo con Vivado. El kit usa VHDL-2008; si Vivado rechaza algo que GHDL acepta, activa VHDL-2008 en las propiedades del fichero en Vivado.</p></div>
+    </section>
+
+    <section id="chuleta">
+      <h2><span class="n">10</span>Chuleta de atajos</h2>
+      <div class="cheat wide">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th colspan="2">Notepad++</th></tr></thead>
+            <tbody>
+              <tr><td><kbd>F6</kbd></td><td>Guardar todo, compilar, simular y abrir GTKWave</td></tr>
+              <tr><td><kbd>F9</kbd></td><td>Comprobar el fichero activo sin simular</td></tr>
+              <tr><td><kbd>Ctrl</kbd>+<kbd>F6</kbd></td><td>Repetir la última orden de NppExec</td></tr>
+              <tr><td><kbd>Ctrl</kbd>+<kbd>S</kbd></td><td>Guardar el fichero</td></tr>
+              <tr><td><kbd>Ctrl</kbd>+<kbd>G</kbd></td><td>Ir a una línea</td></tr>
+              <tr><td><kbd>Ctrl</kbd>+<kbd>Q</kbd></td><td>Comentar o descomentar líneas</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th colspan="2">GTKWave</th></tr></thead>
+            <tbody>
+              <tr><td><kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>F</kbd></td><td>Ver toda la simulación (Zoom Best Fit)</td></tr>
+              <tr><td><kbd>Ctrl</kbd>+<kbd>+</kbd> / <kbd>Ctrl</kbd>+<kbd>-</kbd></td><td>Acercar / alejar</td></tr>
+              <tr><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd></td><td>Recargar las ondas tras volver a simular</td></tr>
+              <tr><td><kbd>Ctrl</kbd>+<kbd>S</kbd></td><td>Guardar la vista (.gtkw)</td></tr>
+              <tr><td>Clic en las ondas</td><td>Colocar el cursor y leer los valores</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<footer>
+  <div class="wrap">Kit: Notepad++ 8.9.8.1 · NppExec 0.8.12.1 · GHDL 6.0.0 · GTKWave 3.3.100. Este manual está en el pendrive como <code>MANUAL_USUARIO.html</code> y se abre con cualquier navegador, sin conexión.</div>
+</footer>

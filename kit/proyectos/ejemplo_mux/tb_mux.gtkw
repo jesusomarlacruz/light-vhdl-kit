@@ -1,0 +1,23 @@
+[*]
+[*] GTKWave Analyzer v3.3.100 (w)1999-2019 BSI
+[*] Vista de tb_mux.ghw: selector (binario), entradas y salida (decimal)
+[*]
+[timestart] 0
+[size] 1000 600
+[pos] -1 -1
+[treeopen] top.
+[treeopen] top.tb_mux.
+[sst_width] 200
+[signals_width] 150
+[sst_expanded] 1
+[sst_vpaned_height] 160
+@28
+#{top.tb_mux.sel[1:0]} top.tb_mux.sel[1] top.tb_mux.sel[0]
+@24
+#{top.tb_mux.a[3:0]} top.tb_mux.a[3] top.tb_mux.a[2] top.tb_mux.a[1] top.tb_mux.a[0]
+#{top.tb_mux.b[3:0]} top.tb_mux.b[3] top.tb_mux.b[2] top.tb_mux.b[1] top.tb_mux.b[0]
+#{top.tb_mux.c[3:0]} top.tb_mux.c[3] top.tb_mux.c[2] top.tb_mux.c[1] top.tb_mux.c[0]
+#{top.tb_mux.d[3:0]} top.tb_mux.d[3] top.tb_mux.d[2] top.tb_mux.d[1] top.tb_mux.d[0]
+#{top.tb_mux.y[3:0]} top.tb_mux.y[3] top.tb_mux.y[2] top.tb_mux.y[1] top.tb_mux.y[0]
+[pattern_trace] 1
+[pattern_trace] 0

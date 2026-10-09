@@ -1,0 +1,13 @@
+::Simular
+NPP_SAVEALL
+cd "$(CURRENT_DIRECTORY)"
+env_set local SIM_NOPAUSE = 1
+"$(NPP_DIRECTORY)\..\sim.bat" $(NAME_PART) 1us
+::Comprobar
+NPP_SAVEALL
+cd "$(CURRENT_DIRECTORY)"
+env_set local SIM_NOPAUSE = 1
+"$(NPP_DIRECTORY)\..\comprobar.bat" "$(FILE_NAME)"
+::Limpiar
+cd "$(CURRENT_DIRECTORY)"
+"$(NPP_DIRECTORY)\..\limpiar.bat"

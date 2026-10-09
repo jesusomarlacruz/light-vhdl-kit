@@ -1,0 +1,14 @@
+* text=auto
+
+# Ficheros que se usan en Windows: siempre con fin de linea CRLF
+# (cmd.exe falla con .bat que solo tienen LF)
+*.bat  text eol=crlf
+*.ps1  text eol=crlf
+*.vhd  text eol=crlf
+*.txt  text eol=crlf
+*.gtkw text eol=crlf
+*.ini  text eol=crlf
+*.xml  text eol=crlf
+*.html text eol=crlf
+
+*.md   text eol=lf

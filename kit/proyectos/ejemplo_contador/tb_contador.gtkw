@@ -1,0 +1,21 @@
+[*]
+[*] GTKWave Analyzer v3.3.100 (w)1999-2019 BSI
+[*] Vista de tb_contador.ghw: reloj, reset, habilitacion y cuenta (decimal)
+[*]
+[timestart] 0
+[size] 1000 600
+[pos] -1 -1
+[treeopen] top.
+[treeopen] top.tb_contador.
+[sst_width] 200
+[signals_width] 150
+[sst_expanded] 1
+[sst_vpaned_height] 160
+@28
+top.tb_contador.clk
+top.tb_contador.rst
+top.tb_contador.en
+@24
+#{top.tb_contador.q[3:0]} top.tb_contador.q[3] top.tb_contador.q[2] top.tb_contador.q[1] top.tb_contador.q[0]
+[pattern_trace] 1
+[pattern_trace] 0

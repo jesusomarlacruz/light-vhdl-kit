@@ -1,0 +1,141 @@
+﻿===============================================================================
+ KIT PORTÁTIL DE SIMULACIÓN VHDL  (Notepad++ + GHDL + GTKWave)
+===============================================================================
+
+Todo funciona desde el pendrive, sin instalar nada. Da igual la letra de
+unidad que el PC asigne al USB (D:, E:, F:...). También funciona si copia la
+carpeta VHDL al disco de su propio ordenador.
+
+Manual completo, con ejemplos y solución de errores: MANUAL_USUARIO.html
+(doble clic; se abre en el navegador sin conexión).
+
+  npp\            Editor Notepad++ (su configuración se guarda aquí mismo)
+  ghdl\           Simulador GHDL (VHDL-2008)
+  gtkwave\        Visor de formas de onda GTKWave
+  proyectos\      Sus proyectos. Una carpeta por proyecto.
+  sim.bat         Compila, simula y abre GTKWave
+  comprobar.bat   Comprueba un fichero .vhd sin simular
+  limpiar.bat     Borra los ficheros generados por la simulación
+  abrir_editor.bat  Abre el editor con la carpeta de proyectos
+
+
+1. ABRIR EL EDITOR
+------------------
+Doble clic en abrir_editor.bat. Se abre Notepad++ con la carpeta "proyectos"
+en el panel de la izquierda: doble clic en un fichero para abrirlo.
+
+
+2. SIMULAR
+----------
+Opción A (recomendada): en Notepad++, con el BANCO DE PRUEBAS como pestaña
+activa (por ejemplo tb_mux.vhd), pulse F6.
+  - Guarda todos los ficheros, compila todos los .vhd de esa carpeta,
+    simula 1 us y abre GTKWave.
+  - Los mensajes (por ejemplo, errores de compilación) aparecen en la consola
+    de la parte inferior de Notepad++.
+  - Si no funciona F6: menú Plugins > NppExec > Simular.
+
+Opción B: desde una consola (cmd) abierta en la carpeta del proyecto:
+      ..\..\sim.bat tb_mux 200ns
+  El segundo parámetro es el tiempo de simulación (por defecto 1us).
+  Truco: en el Explorador, escriba cmd en la barra de direcciones de la
+  carpeta del proyecto y pulse Intro para abrir una consola allí.
+
+CONVENIO OBLIGATORIO: el fichero del banco de pruebas se llama igual que su
+entidad. tb_mux.vhd debe contener "entity tb_mux is". F6 usa el nombre del
+fichero activo como nombre de la entidad que se simula. Por convenio, el
+nombre empieza por tb_ (tb_mux) o termina en _tb (reloj_pulsera_v1_tb).
+
+Otras reglas:
+  - Un proyecto por carpeta. Se compilan TODOS los .vhd de la carpeta, así
+    que no deje copias antiguas con extensión .vhd (renómbrelas a .txt).
+  - El resultado se guarda en tb_xxx.ghw.
+  - Los errores de GHDL tienen la forma fichero.vhd:línea:columna: mensaje
+
+COMPROBAR SIN SIMULAR (F9): con cualquier fichero .vhd activo (el diseño o
+el banco de pruebas), pulse F9. GHDL revisa sintaxis, nombres no
+declarados, tipos y puertos, sin simular y sin necesitar banco de pruebas.
+Los demás .vhd de la carpeta se usan para encontrar las entidades que
+aparezcan en el fichero. Desde la consola: ..\..\comprobar.bat mux4.vhd
+
+
+3. GTKWAVE
+----------
+  - Añadir señales: en el panel izquierdo (SST) despliegue "top" y pulse
+    sobre el banco de pruebas (por ejemplo tb_mux); seleccione señales en la
+    lista de abajo y pulse "Append" (o arrástrelas a la zona de ondas).
+    Dentro de "uut" están las señales del diseño.
+  - Ver todo: menú Time > Zoom > Zoom Best Fit (Shift+Alt+F).
+    Acercar/alejar: botones de lupa de la barra, o Ctrl+"+" y Ctrl+"-".
+  - Formato: clic derecho en la señal > Data Format > Decimal / Hex / Binary.
+  - Guardar la vista: File > Write Save File As... y guárdela en la carpeta
+    del proyecto como tb_xxx.gtkw (mismo nombre que el banco de pruebas).
+    La próxima simulación la abrirá automáticamente con esas señales.
+  - Tras volver a simular con GTKWave abierto: File > Reload Waveform
+    (Ctrl+Shift+R) actualiza las ondas sin perder las señales añadidas.
+    (Cada simulación abre además una ventana nueva; cierre las que sobren.)
+
+Los proyectos ejemplo_mux, ejemplo_contador y reloj_pulsera ya traen su
+vista .gtkw.
+
+
+4. LIMPIAR
+----------
+Pestaña activa de cualquier fichero del proyecto y menú Plugins > NppExec >
+Limpiar, o bien desde la consola en la carpeta del proyecto:
+      ..\..\limpiar.bat
+Borra work\, *.ghw, *.vcd, *.cf, *.o... de esa carpeta. No toca los .vhd
+ni los .gtkw.
+
+
+5. PROYECTO NUEVO
+-----------------
+Cree una carpeta dentro de "proyectos" (sin tildes ni espacios, por ejemplo
+proyectos\practica1) con el diseño (xxx.vhd) y su banco de pruebas
+(tb_xxx.vhd). Puede copiar uno de los ejemplos como plantilla.
+
+
+6. PROBLEMAS FRECUENTES
+-----------------------
+  - Windows no deja ejecutar programas desde el USB (mensaje de bloqueo o
+    "Windows protegió su PC"): en ese PC el kit no puede funcionar. Pruebe
+    en otro PC, copie la carpeta VHDL al disco de su propio ordenador o use
+    EDA Playground (https://www.edaplayground.com) en el navegador.
+  - El antivirus pone en cuarentena algún fichero (ghdl.exe, gtkwave.exe...):
+    en su propio ordenador puede restaurarlo desde el antivirus; en un PC
+    del aula, use otro PC o EDA Playground.
+  - F6 no hace nada o simula otra cosa: compruebe que la pestaña activa es
+    el banco de pruebas (tb_xxx.vhd) y que se ha abierto el editor con
+    abrir_editor.bat (no otro Notepad++ instalado en el PC).
+  - "no se puede reemplazar tb_xxx.ghw": cierre la ventana de GTKWave que
+    lo tiene abierto y vuelva a simular.
+  - GTKWave se cierra al cerrar la consola desde la que lanzó sim.bat: es
+    normal; cierre la consola después de terminar con GTKWave.
+  - Ruta demasiado larga: GHDL no admite rutas de más de 260 caracteres.
+    Use carpetas con nombres cortos.
+
+RECUERDE: GHDL solo SIMULA. La síntesis, la implementación y la programación
+de la FPGA se siguen haciendo con Vivado.
+
+
+-------------------------------------------------------------------------------
+ NOTAS PARA EL PROFESOR
+-------------------------------------------------------------------------------
+Versiones: Notepad++ 8.9.8.1 portable x64, NppExec 0.8.12.1, GHDL 6.0.0
+(mcode, UCRT64), GTKWave 3.3.100 win64 (última versión Windows oficial).
+El kit se reconstruye con scripts\instalar_kit.bat del repositorio
+https://github.com/jesusomarlacruz/light-vhdl-kit
+
+  - sim.bat usa --std=08 y --workdir=work, y recrea la biblioteca work en
+    cada ejecución (evita restos de ficheros renombrados o borrados).
+  - Los scripts NppExec "Simular", "Comprobar" y "Limpiar" están en
+    npp\plugins\Config\npes_saved.txt. El menú se define en [UserMenu] de
+    NppExec.ini (en ese orden) y los atajos en npp\shortcuts.xml:
+    F6 = internalID 25 (Simular), F9 = internalID 26 (Comprobar).
+    Si añade elementos al menú de NppExec, póngalos detrás de esos tres: si
+    no, los atajos quedarían asignados a otros elementos. También se pueden
+    reasignar en Settings > Shortcut Mapper > Plugin commands.
+  - "Execute NppExec Script..." no tiene atajo (F6 se usa para Simular).
+    F7 no se usó porque Notepad++ ya lo usa (Search Results Window).
+  - Notepad++ no busca actualizaciones (disableNppAutoUpdate.xml) y guarda
+    su configuración en npp\ (doLocalConf.xml). No borre esos dos ficheros.

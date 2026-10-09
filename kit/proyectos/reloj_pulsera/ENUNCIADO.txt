@@ -1,0 +1,80 @@
+﻿===============================================================================
+ EJERCICIO: SELECTOR DE PANTALLA DE UN RELOJ DE PULSERA
+ Diseño de máquinas de estados en VHDL
+===============================================================================
+
+ENUNCIADO
+---------
+Un reloj de pulsera puede mostrar cuatro informaciones diferentes:
+
+    Hora        (código de salida S = s1s0 = 00)
+    Alarma      (01)
+    Cronómetro  (10)
+    Fecha       (11)
+
+El cambio de una pantalla a la siguiente se hace mediante un botón B. Cada
+vez que se presiona el botón, el reloj avanza a la siguiente pantalla en el
+orden:
+
+    Hora -> Alarma -> Cronómetro -> Fecha -> Hora -> ...
+
+La condición importante es que el sistema debe avanzar solo una vez por
+pulsación, sin importar cuánto tiempo se mantenga apretado el botón. Es
+decir, el reloj debe esperar a que B vuelva a 0 antes de aceptar una nueva
+pulsación.
+
+El estado inicial debe ser Hora (00).
+
+
+FICHEROS
+--------
+  reloj_pulsera_v1.vhd      Solución 1: máquina de estados con 8 estados
+                            (idle/wait por pantalla).
+  reloj_pulsera_v1_tb.vhd   Banco de pruebas de la versión 1.
+  reloj_pulsera_v2.vhd      Solución 2: 4 estados + detector de flanco de
+                            subida de B (biestable D: B_s = not B_r and B).
+  reloj_pulsera_v2_tb.vhd   Banco de pruebas de la versión 2 (mismos
+                            estímulos que el de la versión 1).
+  contador_ciclos.vhd       Contador de ciclos con genérico N (por defecto 10):
+                            cuenta mientras en = 1, se detiene en N con fin = 1
+                            (no vuelve a empezar solo) y clr lo pone a 0.
+  contador_ciclos_tb.vhd    Banco de pruebas del contador, con N = 5 elegido en
+                            el generic map.
+  *.gtkw                    Vistas de GTKWave: clk, rst, B, S y los estados
+                            cs/ns (y B_r, B_s en la versión 2); en el contador,
+                            en, clr, la cuenta interna y fin.
+
+
+CÓMO SIMULAR
+------------
+Abra reloj_pulsera_v1_tb.vhd y pulse F6. Después, abra reloj_pulsera_v2_tb.vhd
+y pulse F6. Compare las dos ventanas de GTKWave:
+  - Versión 1: S cambia cuando se SUELTA el botón (paso de *_wait a *_idle).
+  - Versión 2: S cambia en cuanto se PULSA el botón (en el primer flanco de
+    reloj después de que B pase a 1).
+En las dos, una pulsación larga hace avanzar la pantalla una sola vez.
+
+Los bancos de pruebas repiten los estímulos de B cada 310 ns; F6 simula 1 us.
+Para ver solo la primera repetición: ..\..\sim.bat reloj_pulsera_v1_tb 310ns
+
+
+POSIBLES EXTENSIONES
+--------------------
+Las extensiones 2, 3 y 4 necesitan contar ciclos de reloj: instancie
+contador_ciclos (eligiendo N con generic map) junto a la máquina de estados,
+que decide cuándo contar (en) y cuándo empezar de nuevo (clr), y reacciona
+cuando el contador avisa de que han pasado N ciclos (fin).
+
+1. Botón hacia adelante y hacia atrás: dos entradas, B_FWD y B_BACK, con
+   avance circular en los dos sentidos (si B_FWD entonces +1, si B_BACK
+   entonces -1).
+2. Regreso automático a la hora: si no hay pulsaciones durante un tiempo T
+   (por ejemplo 10 ciclos de reloj), el sistema vuelve al estado inicial.
+   Se añade un contador que se reinicia con cada pulsación.
+3. Filtro anti-rebote realista: un contador que solo acepta el botón si
+   permanece estable cierto número de ciclos de reloj. Una vez estable, se
+   aplica la lógica de flanco o la máquina de 8 estados.
+4. Avance rápido si el botón se mantiene: si B sigue pulsado más de cierto
+   tiempo, el sistema avanza automáticamente cada ciclo de reloj. Se
+   implementa con un contador de tiempo que, al superar un umbral, genera
+   pulsos repetidos.

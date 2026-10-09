@@ -1,0 +1,24 @@
+[*]
+[*] GTKWave Analyzer v3.3.100 (w)1999-2019 BSI
+[*] Vista de reloj_pulsera_v1_tb.ghw: reloj, reset, boton B, pantalla S (decimal) y estados cs/ns
+[*]
+[timestart] 0
+[size] 1000 600
+[pos] -1 -1
+[treeopen] top.
+[treeopen] top.reloj_pulsera_v1_tb.
+[sst_width] 200
+[signals_width] 170
+[sst_expanded] 1
+[sst_vpaned_height] 160
+@28
+top.reloj_pulsera_v1_tb.clk
+top.reloj_pulsera_v1_tb.rst
+top.reloj_pulsera_v1_tb.b
+@24
+#{top.reloj_pulsera_v1_tb.s[1:0]} top.reloj_pulsera_v1_tb.s[1] top.reloj_pulsera_v1_tb.s[0]
+@28
+top.reloj_pulsera_v1_tb.uut.cs
+top.reloj_pulsera_v1_tb.uut.ns
+[pattern_trace] 1
+[pattern_trace] 0
