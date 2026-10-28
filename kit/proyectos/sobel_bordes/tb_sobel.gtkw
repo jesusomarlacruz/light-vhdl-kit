@@ -1,0 +1,55 @@
+[*]
+[*] GTKWave Analyzer v3.3.100 (w)1999-2019 BSI
+[*] Vista de tb_sobel.ghw: ventana de entrada, etapas del segmentado y salida
+[*] Para ver el principio: acerque el zoom sobre los primeros 200 ns
+[*]
+[timestart] 0
+[size] 1200 800
+[pos] -1 -1
+[treeopen] top.
+[treeopen] top.tb_sobel.
+[sst_width] 200
+[signals_width] 170
+[sst_expanded] 1
+[sst_vpaned_height] 200
+@28
+top.tb_sobel.clk
+top.tb_sobel.rstn
+top.tb_sobel.validin
+@200
+-Ventana de entrada
+@24
+#{top.tb_sobel.p00[7:0]} top.tb_sobel.p00[7] top.tb_sobel.p00[6] top.tb_sobel.p00[5] top.tb_sobel.p00[4] top.tb_sobel.p00[3] top.tb_sobel.p00[2] top.tb_sobel.p00[1] top.tb_sobel.p00[0]
+#{top.tb_sobel.p01[7:0]} top.tb_sobel.p01[7] top.tb_sobel.p01[6] top.tb_sobel.p01[5] top.tb_sobel.p01[4] top.tb_sobel.p01[3] top.tb_sobel.p01[2] top.tb_sobel.p01[1] top.tb_sobel.p01[0]
+#{top.tb_sobel.p02[7:0]} top.tb_sobel.p02[7] top.tb_sobel.p02[6] top.tb_sobel.p02[5] top.tb_sobel.p02[4] top.tb_sobel.p02[3] top.tb_sobel.p02[2] top.tb_sobel.p02[1] top.tb_sobel.p02[0]
+#{top.tb_sobel.p10[7:0]} top.tb_sobel.p10[7] top.tb_sobel.p10[6] top.tb_sobel.p10[5] top.tb_sobel.p10[4] top.tb_sobel.p10[3] top.tb_sobel.p10[2] top.tb_sobel.p10[1] top.tb_sobel.p10[0]
+#{top.tb_sobel.p11[7:0]} top.tb_sobel.p11[7] top.tb_sobel.p11[6] top.tb_sobel.p11[5] top.tb_sobel.p11[4] top.tb_sobel.p11[3] top.tb_sobel.p11[2] top.tb_sobel.p11[1] top.tb_sobel.p11[0]
+#{top.tb_sobel.p12[7:0]} top.tb_sobel.p12[7] top.tb_sobel.p12[6] top.tb_sobel.p12[5] top.tb_sobel.p12[4] top.tb_sobel.p12[3] top.tb_sobel.p12[2] top.tb_sobel.p12[1] top.tb_sobel.p12[0]
+#{top.tb_sobel.p20[7:0]} top.tb_sobel.p20[7] top.tb_sobel.p20[6] top.tb_sobel.p20[5] top.tb_sobel.p20[4] top.tb_sobel.p20[3] top.tb_sobel.p20[2] top.tb_sobel.p20[1] top.tb_sobel.p20[0]
+#{top.tb_sobel.p21[7:0]} top.tb_sobel.p21[7] top.tb_sobel.p21[6] top.tb_sobel.p21[5] top.tb_sobel.p21[4] top.tb_sobel.p21[3] top.tb_sobel.p21[2] top.tb_sobel.p21[1] top.tb_sobel.p21[0]
+#{top.tb_sobel.p22[7:0]} top.tb_sobel.p22[7] top.tb_sobel.p22[6] top.tb_sobel.p22[5] top.tb_sobel.p22[4] top.tb_sobel.p22[3] top.tb_sobel.p22[2] top.tb_sobel.p22[1] top.tb_sobel.p22[0]
+@200
+-Etapa 2: sumas de cada lado
+@24
+#{top.tb_sobel.uut.sx_pos[9:0]} top.tb_sobel.uut.sx_pos[9] top.tb_sobel.uut.sx_pos[8] top.tb_sobel.uut.sx_pos[7] top.tb_sobel.uut.sx_pos[6] top.tb_sobel.uut.sx_pos[5] top.tb_sobel.uut.sx_pos[4] top.tb_sobel.uut.sx_pos[3] top.tb_sobel.uut.sx_pos[2] top.tb_sobel.uut.sx_pos[1] top.tb_sobel.uut.sx_pos[0]
+#{top.tb_sobel.uut.sx_neg[9:0]} top.tb_sobel.uut.sx_neg[9] top.tb_sobel.uut.sx_neg[8] top.tb_sobel.uut.sx_neg[7] top.tb_sobel.uut.sx_neg[6] top.tb_sobel.uut.sx_neg[5] top.tb_sobel.uut.sx_neg[4] top.tb_sobel.uut.sx_neg[3] top.tb_sobel.uut.sx_neg[2] top.tb_sobel.uut.sx_neg[1] top.tb_sobel.uut.sx_neg[0]
+#{top.tb_sobel.uut.sy_pos[9:0]} top.tb_sobel.uut.sy_pos[9] top.tb_sobel.uut.sy_pos[8] top.tb_sobel.uut.sy_pos[7] top.tb_sobel.uut.sy_pos[6] top.tb_sobel.uut.sy_pos[5] top.tb_sobel.uut.sy_pos[4] top.tb_sobel.uut.sy_pos[3] top.tb_sobel.uut.sy_pos[2] top.tb_sobel.uut.sy_pos[1] top.tb_sobel.uut.sy_pos[0]
+#{top.tb_sobel.uut.sy_neg[9:0]} top.tb_sobel.uut.sy_neg[9] top.tb_sobel.uut.sy_neg[8] top.tb_sobel.uut.sy_neg[7] top.tb_sobel.uut.sy_neg[6] top.tb_sobel.uut.sy_neg[5] top.tb_sobel.uut.sy_neg[4] top.tb_sobel.uut.sy_neg[3] top.tb_sobel.uut.sy_neg[2] top.tb_sobel.uut.sy_neg[1] top.tb_sobel.uut.sy_neg[0]
+@200
+-Etapa 3: gradientes (con signo)
+@424
+#{top.tb_sobel.uut.gx[10:0]} top.tb_sobel.uut.gx[10] top.tb_sobel.uut.gx[9] top.tb_sobel.uut.gx[8] top.tb_sobel.uut.gx[7] top.tb_sobel.uut.gx[6] top.tb_sobel.uut.gx[5] top.tb_sobel.uut.gx[4] top.tb_sobel.uut.gx[3] top.tb_sobel.uut.gx[2] top.tb_sobel.uut.gx[1] top.tb_sobel.uut.gx[0]
+#{top.tb_sobel.uut.gy[10:0]} top.tb_sobel.uut.gy[10] top.tb_sobel.uut.gy[9] top.tb_sobel.uut.gy[8] top.tb_sobel.uut.gy[7] top.tb_sobel.uut.gy[6] top.tb_sobel.uut.gy[5] top.tb_sobel.uut.gy[4] top.tb_sobel.uut.gy[3] top.tb_sobel.uut.gy[2] top.tb_sobel.uut.gy[1] top.tb_sobel.uut.gy[0]
+@200
+-Etapa 4: valores absolutos
+@24
+#{top.tb_sobel.uut.ax[9:0]} top.tb_sobel.uut.ax[9] top.tb_sobel.uut.ax[8] top.tb_sobel.uut.ax[7] top.tb_sobel.uut.ax[6] top.tb_sobel.uut.ax[5] top.tb_sobel.uut.ax[4] top.tb_sobel.uut.ax[3] top.tb_sobel.uut.ax[2] top.tb_sobel.uut.ax[1] top.tb_sobel.uut.ax[0]
+#{top.tb_sobel.uut.ay[9:0]} top.tb_sobel.uut.ay[9] top.tb_sobel.uut.ay[8] top.tb_sobel.uut.ay[7] top.tb_sobel.uut.ay[6] top.tb_sobel.uut.ay[5] top.tb_sobel.uut.ay[4] top.tb_sobel.uut.ay[3] top.tb_sobel.uut.ay[2] top.tb_sobel.uut.ay[1] top.tb_sobel.uut.ay[0]
+@200
+-Salida
+@28
+top.tb_sobel.validout
+@24
+#{top.tb_sobel.pix_out[7:0]} top.tb_sobel.pix_out[7] top.tb_sobel.pix_out[6] top.tb_sobel.pix_out[5] top.tb_sobel.pix_out[4] top.tb_sobel.pix_out[3] top.tb_sobel.pix_out[2] top.tb_sobel.pix_out[1] top.tb_sobel.pix_out[0]
+[pattern_trace] 1
+[pattern_trace] 0

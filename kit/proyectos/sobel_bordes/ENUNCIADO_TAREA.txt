@@ -1,0 +1,73 @@
+﻿===============================================================================
+ TAREA: UMBRAL Y FILTRO DE SUAVIZADO
+ Aritmética binaria en VHDL
+===============================================================================
+
+PREPARACIÓN
+-----------
+Copie la carpeta sobel_bordes a una carpeta nueva, tarea_bordes, dentro de
+proyectos. Haga las dos partes en esa copia.
+
+
+PARTE 1: BORDES EN BLANCO Y NEGRO (UMBRAL)
+------------------------------------------
+Ahora la salida de sobel_core es gris: cuanto más fuerte el borde, más
+blanco. Queremos una imagen solo en blanco y negro:
+
+    pix_out = 255   si |Gx| + |Gy| > UMBRAL      (hay borde)
+    pix_out = 0     si no                        (no hay borde)
+
+  1. En sobel_core.vhd, añada un genérico a la entidad:
+         Generic ( UMBRAL : integer := 100 );
+  2. En la etapa 5, cambie la saturación por la comparación con UMBRAL.
+  3. En generar_estimulos.py ponga UMBRAL = 100.
+  4. Ejecute los pasos 1 a 4 (LEEME.txt): ver_resultado.py debe decir IGUALES.
+  5. Repita con UMBRAL = 50 y UMBRAL = 200 (cámbielo en el VHDL y en Python).
+
+  Pregunta: ¿qué circuito hace la comparación |Gx| + |Gy| > UMBRAL?
+  (pista: piense en una resta y en el bit de signo)
+
+
+PARTE 2: FILTRO DE SUAVIZADO
+----------------------------
+Este filtro hace la imagen más borrosa (quita ruido). Cada píxel de salida
+es la media ponderada de su ventana:
+
+        1  2  1
+        2  4  2     / 16
+        1  2  1
+
+  1. Cree un fichero nuevo, suavizado_core.vhd, con una entidad
+     suavizado_core que tenga EXACTAMENTE los mismos puertos que sobel_core.
+  2. Solo sumas y desplazamientos (prohibido usar "*" y "/"):
+         x2 = p & '0'        x4 = p & "00"
+  3. Pista: sume cada fila como en Sobel (a + 2b + c) y después
+     fila0 + 2*fila1 + fila2.
+  4. Dividir entre 16 = quedarse con los bits altos (descartar los 4 bits
+     de menor peso). Calcule cuántos bits hacen falta: como máximo la suma
+     vale 16 x 255.
+  5. Diseño segmentado, con validIn / validOut como en clase.
+  6. En tb_sobel.vhd cambie SOLO la línea
+         uut : entity work.sobel_core
+     por
+         uut : entity work.suavizado_core
+  7. En generar_estimulos.py ponga FILTRO = "suavizado".
+  8. ver_resultado.py debe decir IGUALES.
+  9. Borre tb_sobel.gtkw de la copia (tiene señales de Sobel) y elija en
+     GTKWave las señales de su diseño.
+
+  Preguntas:
+    a) ¿Cuántos bits necesita la suma? Justifíquelo.
+    b) ¿Cuántos sumadores usa? ¿Cuál es la latencia?
+    c) ¿Por qué dividir entre 16 no necesita ningún circuito?
+       ¿Qué pasaría si hubiera que dividir entre 10?
+    d) ¿Por qué aquí no hace falta saturar a 255?
+
+
+ENTREGA
+-------
+  - Documento PDF con: las respuestas, comparacion.png de la parte 1 (con
+    los tres umbrales) y de la parte 2, y una captura de GTKWave de la
+    parte 2 donde se vea la latencia.
+  - Fichero ZIP con sobel_core.vhd (modificado), suavizado_core.vhd y
+    tb_sobel.vhd.

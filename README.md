@@ -1,20 +1,20 @@
 # Light VHDL Kit
 
-A lightweight, portable VHDL environment for students: **Notepad++ + GHDL + GTKWave**, ready to run on Windows from a USB stick or any folder. No installation, no administrator rights and no Vivado needed.
+A lightweight, portable VHDL environment for students: **Notepad++ + GHDL + GTKWave** (plus a portable Python for project scripts), ready to run on Windows from a USB stick or any folder. No installation, no administrator rights and no Vivado needed.
 
 - **F6** in the editor: compiles and simulates the active testbench and opens the waveforms in GTKWave.
 - **F9**: checks the active file (syntax, undeclared names, types, ports) without simulating.
-- Example projects: a 4-to-1 multiplexer, a 4-bit counter, and a wristwatch display selector (finite state machine, two versions) with a configurable cycle counter.
+- Example projects: a 4-to-1 multiplexer, a 4-bit counter, a wristwatch display selector (finite state machine, two versions) with a configurable cycle counter, and a Sobel edge detector that filters a real PNG image (Python prepares the stimuli and checks the VHDL output pixel by pixel).
 - Student manual (Spanish): **[read online](https://jesusomarlacruz.github.io/light-vhdl-kit/)** · [PDF](docs/MANUAL_USUARIO.pdf) · also included in the kit as `MANUAL_USUARIO.html`, which opens offline.
 
 The kit itself (menus, messages, manual and examples) is in **Spanish**.
 
 ## Quick start
 
-Requirements: Windows 10 or 11 (64-bit), an internet connection for the first install, about 160 MB of free space.
+Requirements: Windows 10 or 11 (64-bit), an internet connection for the first install, about 185 MB of free space.
 
 1. Download this repository: green **Code** button → **Download ZIP**, and extract it.
-2. Double-click `scripts\instalar_kit.bat` and type where to install it: a USB drive (`E:`) or a folder (`C:\kit`). It downloads the tools once (about 55 MB), checks them and creates a `VHDL` folder there.
+2. Double-click `scripts\instalar_kit.bat` and type where to install it: a USB drive (`E:`) or a folder (`C:\kit`). It downloads the tools once (about 70 MB), checks them and creates a `VHDL` folder there.
    From a console you can also run `scripts\instalar_kit.bat E:`.
 3. Open the new `VHDL` folder and double-click `abrir_editor.bat`.
 4. Open `proyectos\ejemplo_mux\tb_mux.vhd` and press **F6**. GTKWave opens with the waveforms.
@@ -28,8 +28,8 @@ GHDL only **simulates**. Synthesis, implementation and programming an FPGA still
 | Path | Contents |
 |---|---|
 | `kit/` | Everything copied into `VHDL\` besides the tools: `sim.bat`, `comprobar.bat`, `limpiar.bat`, `abrir_editor.bat`, `LEEME.txt`, `MANUAL_USUARIO.html` and the Notepad++/NppExec configuration (F6 = Simular, F9 = Comprobar). |
-| `kit/proyectos/` | `ejemplo_mux`, `ejemplo_contador` and `reloj_pulsera` (state machine in two versions, testbenches, a cycle counter with a generic, and saved GTKWave views). |
-| `scripts/instalar_kit.bat` / `.ps1` | Builds the kit in a drive or folder. Refuses to touch an existing `VHDL` folder. |
+| `kit/proyectos/` | `ejemplo_mux`, `ejemplo_contador`, `reloj_pulsera` (state machine in two versions, testbenches, a cycle counter with a generic, and saved GTKWave views) and `sobel_bordes` (pipelined Sobel filter, image-based testbench and Python scripts). A `tiempo_sim.txt` in a project folder sets how long F6 simulates. |
+| `scripts/instalar_kit.bat` / `.ps1` | Builds the kit in a drive or folder, or updates an existing one (see below). |
 | `scripts/verificar_kit.ps1` | Automated check of an installed kit (simulations, F6/F9 in the editor, cleanup). |
 | `manual/manual_cuerpo.html` | Source of the manual. `scripts/generar_manual.ps1` turns it into `kit/MANUAL_USUARIO.html`, the online version `docs/index.html` (published with GitHub Pages) and `docs/MANUAL_USUARIO.pdf`. |
 
@@ -43,8 +43,17 @@ This repository contains only scripts, configuration and examples. The installer
 | NppExec | 0.8.12.1 x64 | https://github.com/d0vgan/nppexec |
 | GHDL | 6.0.0 (mcode, UCRT64) | https://github.com/ghdl/ghdl |
 | GTKWave | 3.3.100 win64 (latest official Windows build) | https://sourceforge.net/projects/gtkwave |
+| Python | 3.15.2 embeddable x64 (standard library only) | https://www.python.org/downloads/windows/ |
 
 Versions are pinned (URL + SHA-256) in `scripts/instalar_kit.ps1`. If you update NppExec, re-check the F6/F9 shortcuts: `kit/npp/shortcuts.xml` refers to NppExec menu items by position (`internalID` 25 = Simular, 26 = Comprobar, the first two entries of `[UserMenu]` in `NppExec.ini`).
+
+## Updating an existing kit
+
+```bat
+scripts\instalar_kit.bat E: actualizar
+```
+
+(or double-click `instalar_kit.bat`, type the drive, and answer `s` when it offers to update). It installs any tools the kit is missing, replaces the kit's own scripts, manual and editor configuration, and adds new example projects. Files that already exist in `proyectos\` are never overwritten or deleted.
 
 ## License
 

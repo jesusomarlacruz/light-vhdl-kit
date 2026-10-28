@@ -13,6 +13,7 @@ https://jesusomarlacruz.github.io/light-vhdl-kit/
   npp\            Editor Notepad++ (su configuración se guarda aquí mismo)
   ghdl\           Simulador GHDL (VHDL-2008)
   gtkwave\        Visor de formas de onda GTKWave
+  python\         Python portable (lo usan los scripts de algunos proyectos)
   proyectos\      Sus proyectos. Una carpeta por proyecto.
   sim.bat         Compila, simula y abre GTKWave
   comprobar.bat   Comprueba un fichero .vhd sin simular
@@ -31,14 +32,16 @@ en el panel de la izquierda: doble clic en un fichero para abrirlo.
 Opción A (recomendada): en Notepad++, con el BANCO DE PRUEBAS como pestaña
 activa (por ejemplo tb_mux.vhd), pulse F6.
   - Guarda todos los ficheros, compila todos los .vhd de esa carpeta,
-    simula 1 us y abre GTKWave.
+    simula 1 us y abre GTKWave. Si la carpeta del proyecto tiene un fichero
+    tiempo_sim.txt, simula el tiempo que indique su primera línea (200us...).
   - Los mensajes (por ejemplo, errores de compilación) aparecen en la consola
     de la parte inferior de Notepad++.
   - Si no funciona F6: menú Plugins > NppExec > Simular.
 
 Opción B: desde una consola (cmd) abierta en la carpeta del proyecto:
       ..\..\sim.bat tb_mux 200ns
-  El segundo parámetro es el tiempo de simulación (por defecto 1us).
+  El segundo parámetro es el tiempo de simulación (por defecto, el de
+  tiempo_sim.txt si existe, y si no, 1us).
   Truco: en el Explorador, escriba cmd en la barra de direcciones de la
   carpeta del proyecto y pulse Intro para abrir una consola allí.
 
@@ -76,8 +79,8 @@ aparezcan en el fichero. Desde la consola: ..\..\comprobar.bat mux4.vhd
     (Ctrl+Shift+R) actualiza las ondas sin perder las señales añadidas.
     (Cada simulación abre además una ventana nueva; cierre las que sobren.)
 
-Los proyectos ejemplo_mux, ejemplo_contador y reloj_pulsera ya traen su
-vista .gtkw.
+Los proyectos ejemplo_mux, ejemplo_contador, reloj_pulsera y sobel_bordes ya
+traen su vista .gtkw.
 
 
 4. LIMPIAR
@@ -123,9 +126,12 @@ de la FPGA se siguen haciendo con Vivado.
  NOTAS PARA EL PROFESOR
 -------------------------------------------------------------------------------
 Versiones: Notepad++ 8.9.8.1 portable x64, NppExec 0.8.12.1, GHDL 6.0.0
-(mcode, UCRT64), GTKWave 3.3.100 win64 (última versión Windows oficial).
+(mcode, UCRT64), GTKWave 3.3.100 win64 (última versión Windows oficial),
+Python 3.15.2 embeddable x64 (solo biblioteca estándar, sin pip).
 El kit se reconstruye con scripts\instalar_kit.bat del repositorio
-https://github.com/jesusomarlacruz/light-vhdl-kit
+https://github.com/jesusomarlacruz/light-vhdl-kit, y un kit existente se
+actualiza con: instalar_kit.bat E: actualizar (añade herramientas y
+proyectos nuevos; no sobrescribe nada de proyectos\).
 
   - sim.bat usa --std=08 y --workdir=work, y recrea la biblioteca work en
     cada ejecución (evita restos de ficheros renombrados o borrados).

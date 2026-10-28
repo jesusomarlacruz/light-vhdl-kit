@@ -239,12 +239,12 @@ footer .wrap { padding-block: 20px 32px; }
           <thead><tr><th>Elemento</th><th>Para qué sirve</th></tr></thead>
           <tbody>
             <tr><td><code>abrir_editor.bat</code></td><td>Abre el editor Notepad++ con tus proyectos. <strong>Empieza siempre por aquí.</strong></td></tr>
-            <tr><td><code>proyectos\</code></td><td>Tus proyectos, una carpeta por proyecto. Trae tres: <code>ejemplo_mux</code>, <code>ejemplo_contador</code> y <code>reloj_pulsera</code> (un ejercicio de máquina de estados, con su enunciado en <code>ENUNCIADO.txt</code>).</td></tr>
+            <tr><td><code>proyectos\</code></td><td>Tus proyectos, una carpeta por proyecto. Trae cuatro: <code>ejemplo_mux</code>, <code>ejemplo_contador</code>, <code>reloj_pulsera</code> (un ejercicio de máquina de estados, con su enunciado en <code>ENUNCIADO.txt</code>) y <code>sobel_bordes</code> (detección de bordes en una imagen; los pasos están en su <code>LEEME.txt</code>).</td></tr>
             <tr><td><code>sim.bat</code></td><td>Compila, simula y abre las ondas. Lo usa la tecla <kbd>F6</kbd> del editor.</td></tr>
             <tr><td><code>comprobar.bat</code></td><td>Comprueba un fichero <code>.vhd</code> sin simular. Lo usa la tecla <kbd>F9</kbd>.</td></tr>
             <tr><td><code>limpiar.bat</code></td><td>Borra los ficheros que genera la simulación.</td></tr>
             <tr><td><code>LEEME.txt</code></td><td>Resumen rápido de este manual.</td></tr>
-            <tr><td><code>npp\</code>, <code>ghdl\</code>, <code>gtkwave\</code></td><td>Los programas: el editor, el simulador y el visor de ondas. No hace falta tocarlos.</td></tr>
+            <tr><td><code>npp\</code>, <code>ghdl\</code>, <code>gtkwave\</code>, <code>python\</code></td><td>Los programas: el editor, el simulador, el visor de ondas y Python (lo usan los scripts de algunos proyectos, como <code>sobel_bordes</code>). No hace falta tocarlos.</td></tr>
           </tbody>
         </table>
       </div>
@@ -276,7 +276,7 @@ Abriendo GTKWave con la vista guardada tb_mux.gtkw
         <li><div><p>Se abre GTKWave, maximizado, con el selector, las cuatro entradas y la salida. Comprueba que <code>y</code> copia la entrada que indica <code>sel</code>.</p></div></li>
       </ol>
       <div class="note ok"><p class="h">Si has llegado hasta aquí, el kit funciona en este PC.</p><p>Repite con <code>ejemplo_contador\tb_contador.vhd</code> para ver un circuito con reloj.</p></div>
-      <div class="note"><p class="h">F6 simula como máximo 1 µs</p><p>Es suficiente para los ejemplos. Si tu banco de pruebas necesita más tiempo, la simulación se corta en 1 µs y verás <code>simulation stopped by --stop-time @1us</code>. Para simular más, usa la consola (<a href="#consola">sección 7</a>) e indica el tiempo, por ejemplo <code>5us</code>.</p></div>
+      <div class="note"><p class="h">F6 simula 1 µs, salvo que el proyecto indique otro tiempo</p><p>Es suficiente para casi todos los ejemplos. Si tu banco de pruebas necesita más tiempo, la simulación se corta en 1 µs y verás <code>simulation stopped by --stop-time @1us</code>. Para simular más con F6, crea en la carpeta del proyecto un fichero <code>tiempo_sim.txt</code> con el tiempo en la primera línea (por ejemplo <code>200us</code>), como en <code>sobel_bordes</code>. También puedes usar la consola (<a href="#consola">sección 7</a>) e indicar el tiempo, por ejemplo <code>5us</code>.</p></div>
     </section>
 
     <section id="comprobar">
@@ -434,7 +434,7 @@ end architecture sim;</pre>
             <tr><td><span class="tag warn">aviso</span><br><code>AVISO: "mux4" no parece un banco de pruebas</code></td><td>Has pulsado <kbd>F6</kbd> con el diseño activo en vez del banco de pruebas. Activa la pestaña del banco de pruebas y vuelve a pulsar <kbd>F6</kbd>.</td></tr>
             <tr><td><span class="tag warn">aviso</span><br><code>no se puede reemplazar tb_xxx.ghw</code></td><td>Otro programa tiene abierto el fichero de ondas. Ciérralo y vuelve a simular.</td></tr>
             <tr><td><span class="tag ok">normal</span><br><code>simulation stopped @230ns</code></td><td>El banco de pruebas ha terminado con <code>std.env.stop</code>. Correcto.</td></tr>
-            <tr><td><span class="tag ok">normal</span><br><code>simulation stopped by --stop-time @1us</code></td><td>Se ha llegado al tiempo máximo. Si la prueba no había terminado, simula más tiempo desde la consola.</td></tr>
+            <tr><td><span class="tag ok">normal</span><br><code>simulation stopped by --stop-time @1us</code></td><td>Se ha llegado al tiempo máximo. Si la prueba no había terminado, indica más tiempo en <code>tiempo_sim.txt</code> o desde la consola.</td></tr>
           </tbody>
         </table>
       </div>
@@ -447,7 +447,7 @@ end architecture sim;</pre>
         <li><div><p>Abre la carpeta del proyecto en el Explorador de archivos, escribe <code>cmd</code> en la barra de direcciones y pulsa <kbd>Intro</kbd>. Se abre una consola en esa carpeta.</p></div></li>
         <li><div><p>Escribe el nombre de la entidad del banco de pruebas y, si quieres, el tiempo:</p>
 <pre>..\..\sim.bat tb_contador 5us</pre>
-<p><code>..\..\</code> sube de la carpeta del proyecto a la carpeta <code>VHDL</code>, donde está <code>sim.bat</code>. Unidades de tiempo: <code>ns</code>, <code>us</code>, <code>ms</code>, sin espacio. Por defecto, <code>1us</code>.</p></div></li>
+<p><code>..\..\</code> sube de la carpeta del proyecto a la carpeta <code>VHDL</code>, donde está <code>sim.bat</code>. Unidades de tiempo: <code>ns</code>, <code>us</code>, <code>ms</code>, sin espacio. Si no lo indicas, se usa el de <code>tiempo_sim.txt</code> (si el proyecto lo tiene) o <code>1us</code>.</p></div></li>
       </ol>
       <p>Si hay errores, la consola espera a que pulses una tecla. GTKWave queda ligado a esa consola: ciérrala cuando termines con GTKWave, no antes.</p>
     </section>
@@ -516,5 +516,5 @@ end architecture sim;</pre>
 </div>
 
 <footer>
-  <div class="wrap">Kit: Notepad++ 8.9.8.1 · NppExec 0.8.12.1 · GHDL 6.0.0 · GTKWave 3.3.100. Este manual está en el kit como <code>MANUAL_USUARIO.html</code> y se abre con cualquier navegador, sin conexión. También se puede leer en línea en <a href="https://jesusomarlacruz.github.io/light-vhdl-kit/">jesusomarlacruz.github.io/light-vhdl-kit</a> o descargar en <a href="https://github.com/jesusomarlacruz/light-vhdl-kit/raw/main/docs/MANUAL_USUARIO.pdf">PDF</a>.</div>
+  <div class="wrap">Kit: Notepad++ 8.9.8.1 · NppExec 0.8.12.1 · GHDL 6.0.0 · GTKWave 3.3.100 · Python 3.15.2. Este manual está en el kit como <code>MANUAL_USUARIO.html</code> y se abre con cualquier navegador, sin conexión. También se puede leer en línea en <a href="https://jesusomarlacruz.github.io/light-vhdl-kit/">jesusomarlacruz.github.io/light-vhdl-kit</a> o descargar en <a href="https://github.com/jesusomarlacruz/light-vhdl-kit/raw/main/docs/MANUAL_USUARIO.pdf">PDF</a>.</div>
 </footer>

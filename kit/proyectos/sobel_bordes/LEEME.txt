@@ -1,0 +1,51 @@
+﻿===============================================================================
+ EJEMPLO DE APLICACIÓN: DETECCIÓN DE BORDES (FILTRO DE SOBEL)
+ Aritmética binaria en VHDL
+===============================================================================
+
+Un circuito que detecta los bordes de una imagen usando solo sumadores y
+restadores. Una imagen PNG entra en la simulación y sale con los bordes.
+
+
+PASO A PASO
+-----------
+1. Doble clic en 1_generar_estimulos.bat
+     Lee imagen_prueba.png y crea estimulos.txt, esperados.txt e
+     info_imagen.txt. Para usar otra imagen PNG, arrástrela sobre el .bat.
+
+2. Abra tb_sobel.vhd en Notepad++ y pulse F6
+     Compila, simula, escribe resultados.txt y abre GTKWave.
+     El tiempo de simulación se lee de tiempo_sim.txt (200us).
+
+3. En GTKWave, acerque el zoom sobre los primeros 200 ns para ver cómo
+   avanzan los datos por las etapas (la vista tb_sobel.gtkw ya trae las
+   señales).
+
+4. Doble clic en 4_ver_resultado.bat
+     Compara la salida del circuito con la de Python y escribe IGUALES o
+     DISTINTAS (con la fila y columna de los primeros errores). Abre
+     comparacion.png: entrada | esperada (Python) | obtenida (VHDL), y un
+     cuarto panel con los píxeles distintos si hay errores.
+
+
+FICHEROS
+--------
+  sobel_core.vhd          El circuito: ventana 3x3, 5 etapas, solo sumas y restas
+  tb_sobel.vhd            Banco de pruebas: lee estimulos.txt y escribe
+                          resultados.txt
+  tb_sobel.gtkw           Vista de GTKWave con las señales de cada etapa
+  tiempo_sim.txt          Tiempo de simulación para F6
+  generar_estimulos.py    Paso 1: imagen -> ventanas + resultados esperados
+  ver_resultado.py        Paso 4: compara con esperados.txt y muestra las imágenes
+  imagenes.py             Lee y guarda PNG sin instalar nada (no hace falta leerlo)
+  imagen_prueba.png       Imagen de prueba
+  ENUNCIADO_TAREA.txt     Tarea: umbral y filtro de suavizado
+
+
+PYTHON
+------
+Los scripts solo usan la biblioteca estándar de Python. Los .bat buscan
+primero el Python portable del kit (carpeta python junto a npp, ghdl y
+gtkwave) y, si no está, el Python instalado en el ordenador.
+Sin el paquete Pillow solo se leen imágenes PNG: para usar una foto JPG,
+ábrala con Paint y guárdela como PNG.

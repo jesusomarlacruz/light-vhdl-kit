@@ -9,7 +9,10 @@
   limpiar.bat, el editor (F6 = Simular, F9 = Comprobar, Limpiar) y que el
   editor no escribe su configuracion en %APPDATA%\Notepad++.
 #>
-param([string]$Kit = 'D:\VHDL')
+param(
+  [string]$Kit = 'D:\VHDL',
+  [string]$TbEditor = ''    # banco de pruebas para la prueba del editor (por defecto, el primero)
+)
 $K = $Kit.TrimEnd('\')
 
 if (-not ('KitVerif' -as [type])) {
@@ -88,6 +91,19 @@ $res['ghdl --version'] = ($LASTEXITCODE -eq 0 -and $v[0] -match '^GHDL ')
 cmd /c "`"$K\gtkwave\bin\gtkwave.exe`" -h > `"$tmp\gv.txt`" 2>&1"; $gv = (Get-Content "$tmp\gv.txt") -join ' '
 Write-Host "  gtkwave -h: $(if ($gv -match 'Usage: .*gtkwave') { 'responde' } else { 'sin respuesta' })"
 $res['gtkwave -h (arranca)'] = ($gv -match 'Usage: .*gtkwave')
+$py = "$K\python\python.exe"
+$pv = (& $py --version 2>&1) -join ' '; Write-Host "  $pv"
+$res['python --version (portable)'] = ($LASTEXITCODE -eq 0 -and $pv -match '^Python 3')
+
+# Proyectos con scripts de Python (sobel_bordes): paso 1 antes de simular
+$conPython = @(Get-ChildItem "$K\proyectos" -Directory | Where-Object { Test-Path "$($_.FullName)\1_generar_estimulos.bat" })
+if ($conPython) { Write-Host "=== Paso 1 (Python) en proyectos con scripts ===" }
+foreach ($dir in $conPython) {
+  cmd /c "`"$($dir.FullName)\1_generar_estimulos.bat`" < nul > `"$tmp\gen.txt`" 2>&1"
+  $gen = (Get-Content "$tmp\gen.txt") -join ' '
+  Write-Host "  $($dir.Name): $(([regex]::Match($gen, 'Filtro .*?estimulos\.txt')).Value)"
+  $res["paso 1 generar_estimulos $($dir.Name)"] = ($gen -match 'ventanas escritas' -and (Test-Path "$($dir.FullName)\estimulos.txt"))
+}
 
 Write-Host "=== sim.bat en cada banco de pruebas ==="
 foreach ($dir in Get-ChildItem "$K\proyectos" -Directory) {
@@ -104,6 +120,16 @@ foreach ($dir in Get-ChildItem "$K\proyectos" -Directory) {
   }
 }
 
+if ($conPython) { Write-Host "=== Paso 4 (Python): comparar con el modelo de referencia ===" }
+foreach ($dir in $conPython) {
+  # ver_resultado.py sin abrir el visor de imagenes al final
+  $cod = "import os, sys, runpy; os.chdir(r'$($dir.FullName)'); sys.path.insert(0, os.getcwd()); " +
+         "import imagenes; imagenes.abrir = lambda ruta: None; runpy.run_path('ver_resultado.py', run_name='__main__')"
+  $ver = (& $py -c $cod 2>&1) -join ' '
+  Write-Host "  $($dir.Name): $(([regex]::Match($ver, '(IGUALES|DISTINTAS)[^.]*')).Value)"
+  $res["paso 4 ver_resultado $($dir.Name)"] = ($ver -match 'IGUALES' -and (Test-Path "$($dir.FullName)\comparacion.png"))
+}
+
 Write-Host "=== comprobar.bat en cada .vhd ==="
 foreach ($f in Get-ChildItem "$K\proyectos" -Recurse -Filter *.vhd) {
   cmd /c "cd /d `"$($f.DirectoryName)`" && `"$K\comprobar.bat`" $($f.Name) > `"$tmp\c.txt`" 2>&1"; $rc = $LASTEXITCODE
@@ -113,7 +139,7 @@ foreach ($f in Get-ChildItem "$K\proyectos" -Recurse -Filter *.vhd) {
 Write-Host "=== limpiar.bat ==="
 foreach ($dir in Get-ChildItem "$K\proyectos" -Directory) {
   cmd /c "cd /d `"$($dir.FullName)`" && `"$K\limpiar.bat`" > nul 2>&1"
-  $resto = Get-ChildItem $dir.FullName -Force | Where-Object { $_.Name -notmatch '\.(vhd|gtkw|txt)$' } | ForEach-Object Name
+  $resto = Get-ChildItem $dir.FullName -Force | Where-Object { $_.Name -eq 'work' -or $_.Extension -in '.ghw', '.vcd', '.fst', '.cf', '.o', '.lst' } | ForEach-Object Name
   $res["limpiar $($dir.Name)"] = -not $resto
 }
 
@@ -128,7 +154,9 @@ $n = @{ P = $p; W = [KitVerif]::MainWindow([uint32]$p.Id, 'Notepad++') }
 $panel = [KitVerif]::CountChildren($n.W, 'SysTreeView32') -gt 0
 $res['abrir_editor.bat (panel de proyectos)'] = ($panel -and (CerrarNpp $n))
 
-$tbv = Get-ChildItem "$K\proyectos" -Recurse -Filter *.vhd | Where-Object { $_.BaseName -match '^tb|_tb$' } | Select-Object -First 1
+$tbv = Get-ChildItem "$K\proyectos" -Recurse -Filter *.vhd | Where-Object { $_.BaseName -match '^tb|_tb$' -and (-not $TbEditor -or $_.Name -eq $TbEditor -or $_.BaseName -eq $TbEditor) } | Select-Object -First 1
+if (-not $tbv) { throw "No se encuentra el banco de pruebas $TbEditor" }
+Write-Host "  prueba del editor con $($tbv.Directory.Name)\$($tbv.Name)"
 $antes = @(Get-Process gtkwave -ErrorAction SilentlyContinue).Id
 $n = Npp @('-multiInst', '-nosession', "`"$($tbv.FullName)`"")
 $items = [KitVerif]::Items([KitVerif]::SubMenu([KitVerif]::SubMenu([KitVerif]::GetMenu($n.W), 'Plugins'), 'NppExec'))
@@ -138,7 +166,9 @@ $res['F6 = Simular, F9 = Comprobar'] = ($sim -match "`tF6$" -and $chk -match "`t
 function Orden($item) { [KitVerif]::PostMessage($n.W, 0x0111, [IntPtr][int](($item -split "`t")[0]), [IntPtr]::Zero) | Out-Null }
 Orden $sim; Start-Sleep -Seconds 10
 $con = [KitVerif]::RichEditText($n.W); $g = NuevosGtk $antes
-$res['Simular desde el editor'] = ($con -match 'Simulacion terminada correctamente' -and $con -match 'Exit code 0' -and (Test-Path "$($tbv.DirectoryName)\$($tbv.BaseName).ghw") -and $g.Count -eq 1)
+$tsim = if (Test-Path "$($tbv.DirectoryName)\tiempo_sim.txt") { (Get-Content "$($tbv.DirectoryName)\tiempo_sim.txt" -TotalCount 1).Trim() } else { '1us' }
+Write-Host "  F6 simula $($tbv.BaseName) hasta: $(([regex]::Match($con, 'hasta (\S+)')).Groups[1].Value) (esperado $tsim)"
+$res['Simular desde el editor'] = ($con -match 'Simulacion terminada correctamente' -and $con -match 'Exit code 0' -and $con -match "hasta $([regex]::Escape($tsim))" -and (Test-Path "$($tbv.DirectoryName)\$($tbv.BaseName).ghw") -and $g.Count -eq 1)
 $g | Stop-Process -Force
 Orden $chk; Start-Sleep -Seconds 6
 $res['Comprobar desde el editor'] = ([KitVerif]::RichEditText($n.W) -match "Correcto: $([regex]::Escape($tbv.Name))")

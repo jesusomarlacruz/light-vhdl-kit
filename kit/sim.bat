@@ -4,6 +4,7 @@ rem  sim.bat - Compila y simula un banco de pruebas con GHDL y abre GTKWave
 rem
 rem  Uso:     sim.bat <entidad_testbench> [tiempo_de_parada]
 rem  Ejemplo: sim.bat tb_mux 200ns
+rem  Sin tiempo de parada: el de tiempo_sim.txt del proyecto, o 1us.
 rem
 rem  Se ejecuta desde la carpeta del proyecto (la que contiene los .vhd).
 rem  Compila todos los .vhd de esa carpeta (VHDL-2008) en la subcarpeta work\
@@ -21,6 +22,9 @@ set "OPCIONES=--std=08 --workdir=work"
 if "%~1"=="" goto uso
 set "TB=%~n1"
 set "TIEMPO=%~2"
+rem Sin tiempo en la orden (F6): el de tiempo_sim.txt si el proyecto lo tiene
+rem (su primera linea, por ejemplo 200us) y si no, 1us.
+if "%TIEMPO%"=="" if exist "tiempo_sim.txt" set /p TIEMPO=<"tiempo_sim.txt"
 if "%TIEMPO%"=="" set "TIEMPO=1us"
 
 rem Aviso (no es un error): por convenio los bancos de pruebas empiezan por tb
@@ -133,7 +137,8 @@ goto fallo
 :uso
 echo Uso:     sim.bat ^<entidad_testbench^> [tiempo_de_parada]
 echo Ejemplo: sim.bat tb_mux 200ns
-echo Ejecutelo desde la carpeta del proyecto. Tiempo de parada por defecto: 1us
+echo Ejecutelo desde la carpeta del proyecto. Tiempo de parada por defecto: el de
+echo tiempo_sim.txt si el proyecto lo tiene, y si no, 1us
 goto fallo
 
 :fallo
